@@ -65,9 +65,8 @@
       <parameter id="cell__nu_max" value="1260" units="per_second" constant="true"/>
       <parameter id="cell__m_aa" value="1.826e-07" units="per_second" constant="true"/>
       <parameter id="cell__phi_t" value="0.9473" units="per_second" constant="true"/>
-      <parameter id="mass__c_1" value="239089" units="per_second" constant="true"/>
-      <parameter id="mass__c_2" value="7432" units="per_second" constant="true"/>
-      <parameter id="mass__c_3" value="37.06" units="per_second" constant="true"/>
+      <parameter id="mass__mp_mp0" value="773.748" units="per_second" constant="true"/>
+      <parameter id="mass__mp_beta" value="61.7813" units="per_second" constant="true"/>
     </listOfParameters>
     <listOfRules>
       <assignmentRule id="cell__p_r___R0" variable="cell__p_r__K_C0">
@@ -419,19 +418,16 @@
       <assignmentRule id="mass___R24" variable="mass__m_h">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <plus/>
+            <times/>
+            <ci> mass__mp_mp0 </ci>
             <apply>
-              <times/>
-              <ci> mass__c_1 </ci>
-              <ci> mass__mu </ci>
-              <ci> mass__mu </ci>
+              <exp/>
+              <apply>
+                <times/>
+                <ci> mass__mp_beta </ci>
+                <ci> mass__mu </ci>
+              </apply>
             </apply>
-            <apply>
-              <times/>
-              <ci> mass__c_2 </ci>
-              <ci> mass__mu </ci>
-            </apply>
-            <ci> mass__c_3 </ci>
           </apply>
         </math>
       </assignmentRule>

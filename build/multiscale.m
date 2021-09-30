@@ -41,9 +41,8 @@ classdef multiscale
 			p.cell__nu_max = 1260.0;
 			p.cell__m_aa = 1.826e-07;
 			p.cell__phi_t = 0.9473;
-			p.mass__c_1 = 239089.0;
-			p.mass__c_2 = 7432.0;
-			p.mass__c_3 = 37.06;
+			p.mass__mp_mp0 = 773.748;
+			p.mass__mp_beta = 61.7813;
 		end
 
 		function x0 = initial_conditions(~)
@@ -103,7 +102,7 @@ classdef multiscale
 			cell__nu = p.cell__nu_max;
 			cell__m_p = cell__p_r__m + cell__p_nr__m;
 			mass__mu = cell__mu;
-			mass__m_h = p.mass__c_1.*mass__mu.*mass__mu + p.mass__c_2.*mass__mu + p.mass__c_3;
+			mass__m_h = p.mass__mp_mp0.*exp(p.mass__mp_beta.*mass__mu);
 			cell__m_h = mass__m_h;
 			cell__p_r__nu = cell__nu;
 			cell__p_r__m_h = cell__m_h;
@@ -159,7 +158,7 @@ classdef multiscale
 			cell__nu = p.cell__nu_max;
 			cell__m_p = cell__p_r__m + cell__p_nr__m;
 			mass__mu = cell__mu;
-			mass__m_h = p.mass__c_1.*mass__mu.*mass__mu + p.mass__c_2.*mass__mu + p.mass__c_3;
+			mass__m_h = p.mass__mp_mp0.*exp(p.mass__mp_beta.*mass__mu);
 			cell__m_h = mass__m_h;
 			cell__p_r__nu = cell__nu;
 			cell__p_r__m_h = cell__m_h;
@@ -236,9 +235,8 @@ classdef multiscale
 			out.cell__nu_max = p.cell__nu_max.*ones_t;
 			out.cell__m_aa = p.cell__m_aa.*ones_t;
 			out.cell__phi_t = p.cell__phi_t.*ones_t;
-			out.mass__c_1 = p.mass__c_1.*ones_t;
-			out.mass__c_2 = p.mass__c_2.*ones_t;
-			out.mass__c_3 = p.mass__c_3.*ones_t;
+			out.mass__mp_mp0 = p.mass__mp_mp0.*ones_t;
+			out.mass__mp_beta = p.mass__mp_beta.*ones_t;
 
 		end
 		function plot(~,out)

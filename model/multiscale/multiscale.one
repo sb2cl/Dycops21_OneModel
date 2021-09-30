@@ -1,10 +1,11 @@
 import './metabolic/wild_type.one'
 import './mass_equation/mass_interpolated.one'
+import './mass_equation/mass_eq_jesus.one'
 
 parameter __t_end = 10000
 
 cell = WildType()
-mass = MassInterpolated()
+mass = MassEqJesus()
 
 rule
   cell.nu_eq: cell.nu := cell.nu_max
