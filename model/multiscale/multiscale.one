@@ -7,6 +7,8 @@ import './metabolic/wild_type.one'
 import './mass_equation/mass_interpolated.one'
 import './mass_equation/mass_eq_jesus.one'
 
+# Bioreactors.
+import './bioreactor/batch.one'
 
 ### META-MODEL OPTIONS ###
 
@@ -14,7 +16,7 @@ import './mass_equation/mass_eq_jesus.one'
 mass_equation = 'interpolated'
 
 # Bioreactor type: 'nu_fix', 'substrate_fix', 'batch'.
-bioreactor = 'substrate_fix'
+bioreactor = 'batch'
 
 # Simulation time.
 parameter __t_end = 10000
@@ -63,5 +65,15 @@ if strcmp(bioreactor, 'substrate_fix')
   rule
     # Fix the substrate to a fix value (gram/litre).
     cell.s := 3.6
+  end
+end
+
+if strcmp(bioreactor, 'batch')
+  bio = Batch()
+
+  rule
+    bio.mu := cell.mu
+    bio.m_p := cell.m_p
+    cell.s := bio.s
   end
 end

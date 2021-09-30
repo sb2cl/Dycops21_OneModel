@@ -2,7 +2,7 @@ model Bioreactor
 
   input
     # Cell mass.
-    m_p             # fg
+    m_p             # fg/cell
     # Growth rate.
     mu              # 1/min
     # Input media flux.
@@ -17,7 +17,7 @@ model Bioreactor
     # Fresh media substrate concentration.
     s_f = 3.6       # g/L
     # Concentration of E.Coli. cells in 1 OD (Optical density).
-    nOD = 1e+12      # cell/L
+    nOD = 1         # teracell/L
   end
 
   species
@@ -28,7 +28,7 @@ model Bioreactor
     # Total volume removed from the bioreactor.
     V_out = 0       # L
     # Concentration of cells in the bioreactor.
-    N = 5e+10       # cell/L
+    N = 0.05        # teracell/L
     # Concentration of biomass in the biorreactor.
     x = 0           # g/L
     # Optical densisity in the biorreactor.
@@ -40,7 +40,7 @@ model Bioreactor
   end
 
   rule
-    x := N*m_p*1e-15
+    x := N*m_p*1e-3
     OD := N/nOD 
     V' = F_in - F_out
     V_feed' = F_in

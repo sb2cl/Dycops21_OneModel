@@ -44,6 +44,9 @@ classdef multiscale
 			p.mass__c_1 = 239089.0;
 			p.mass__c_2 = 7432.0;
 			p.mass__c_3 = 37.06;
+			p.bio__y = 0.45;
+			p.bio__s_f = 3.6;
+			p.bio__nOD = 1.0;
 		end
 
 		function x0 = initial_conditions(~)
@@ -53,16 +56,28 @@ classdef multiscale
 				100.0 % cell__p_nr__m
 				0.01 % cell__mu (algebraic)
 				350.0 % cell__r (algebraic)
+				1.0 % bio__V
+				0.0 % bio__V_feed
+				0.0 % bio__V_out
+				0.05 % bio__N
+				3.6 % bio__s
+				0.0 % bio__S
 			];
 		end
 
 		function M = mass_matrix(~)
 			%% Mass matrix for DAE systems.
 			M = [
-				1 0 0 0 
-				0 1 0 0 
-				0 0 0 0 
-				0 0 0 0 
+				1 0 0 0 0 0 0 0 0 0 
+				0 1 0 0 0 0 0 0 0 0 
+				0 0 0 0 0 0 0 0 0 0 
+				0 0 0 0 0 0 0 0 0 0 
+				0 0 0 0 1 0 0 0 0 0 
+				0 0 0 0 0 1 0 0 0 0 
+				0 0 0 0 0 0 1 0 0 0 
+				0 0 0 0 0 0 0 1 0 0 
+				0 0 0 0 0 0 0 0 1 0 
+				0 0 0 0 0 0 0 0 0 1 
 			];
 		end
 
@@ -88,9 +103,15 @@ classdef multiscale
 			cell__p_nr__m = x(2,:);
 			cell__mu = x(3,:);
 			cell__r = x(4,:);
+			bio__V = x(5,:);
+			bio__V_feed = x(6,:);
+			bio__V_out = x(7,:);
+			bio__N = x(8,:);
+			bio__s = x(9,:);
+			bio__S = x(10,:);
 
 			% Assigment states:
-			cell__s = 3.6;
+			cell__s = bio__s;
 			cell__p_r__mu = cell__mu;
 			cell__p_r__r = cell__r;
 			cell__p_r__E_m = 3.459;
@@ -102,6 +123,12 @@ classdef multiscale
 			cell__m_p = cell__p_r__m + cell__p_nr__m;
 			mass__mu = cell__mu;
 			mass__m_h = p.mass__c_1.*mass__mu.*mass__mu + p.mass__c_2.*mass__mu + p.mass__c_3;
+			bio__m_p = cell__m_p;
+			bio__mu = cell__mu;
+			bio__F_in = 0;
+			bio__F_out = 0;
+			bio__x = bio__N.*bio__m_p.*1e-3;
+			bio__OD = bio__N./p.bio__nOD;
 			cell__m_h = mass__m_h;
 			cell__p_r__nu = cell__nu;
 			cell__p_r__m_h = cell__m_h;
@@ -130,6 +157,24 @@ classdef multiscale
 			% der(cell__r)
 			dx(4,1) = cell__r - p.cell__phi_t.*cell__p_r__r_t./(1 + cell__J_sum_E);
 
+			% der(bio__V)
+			dx(5,1) = bio__F_in - bio__F_out;
+
+			% der(bio__V_feed)
+			dx(6,1) = bio__F_in;
+
+			% der(bio__V_out)
+			dx(7,1) = bio__F_out;
+
+			% der(bio__N)
+			dx(8,1) = bio__mu.*bio__N - (bio__F_in./bio__V).*bio__N;
+
+			% der(bio__s)
+			dx(9,1) = (bio__F_in./bio__V).*(p.bio__s_f - bio__s) - (1./p.bio__y).*bio__mu.*bio__x;
+
+			% der(bio__S)
+			dx(10,1) = bio__F_out.*bio__s;
+
 		end
 		function out = simout2struct(~,t,x,p)
 			%% Convert the simulation output into an easy-to-use struct.
@@ -141,9 +186,15 @@ classdef multiscale
 			cell__p_nr__m = x(2,:);
 			cell__mu = x(3,:);
 			cell__r = x(4,:);
+			bio__V = x(5,:);
+			bio__V_feed = x(6,:);
+			bio__V_out = x(7,:);
+			bio__N = x(8,:);
+			bio__s = x(9,:);
+			bio__S = x(10,:);
 
 			% Assigment states:
-			cell__s = 3.6;
+			cell__s = bio__s;
 			cell__p_r__mu = cell__mu;
 			cell__p_r__r = cell__r;
 			cell__p_r__E_m = 3.459;
@@ -155,6 +206,12 @@ classdef multiscale
 			cell__m_p = cell__p_r__m + cell__p_nr__m;
 			mass__mu = cell__mu;
 			mass__m_h = p.mass__c_1.*mass__mu.*mass__mu + p.mass__c_2.*mass__mu + p.mass__c_3;
+			bio__m_p = cell__m_p;
+			bio__mu = cell__mu;
+			bio__F_in = 0;
+			bio__F_out = 0;
+			bio__x = bio__N.*bio__m_p.*1e-3;
+			bio__OD = bio__N./p.bio__nOD;
 			cell__m_h = mass__m_h;
 			cell__p_r__nu = cell__nu;
 			cell__p_r__m_h = cell__m_h;
@@ -210,6 +267,18 @@ classdef multiscale
 			out.cell__r = cell__r.*ones_t;
 			out.mass__mu = mass__mu.*ones_t;
 			out.mass__m_h = mass__m_h.*ones_t;
+			out.bio__m_p = bio__m_p.*ones_t;
+			out.bio__mu = bio__mu.*ones_t;
+			out.bio__F_in = bio__F_in.*ones_t;
+			out.bio__F_out = bio__F_out.*ones_t;
+			out.bio__V = bio__V.*ones_t;
+			out.bio__V_feed = bio__V_feed.*ones_t;
+			out.bio__V_out = bio__V_out.*ones_t;
+			out.bio__N = bio__N.*ones_t;
+			out.bio__x = bio__x.*ones_t;
+			out.bio__OD = bio__OD.*ones_t;
+			out.bio__s = bio__s.*ones_t;
+			out.bio__S = bio__S.*ones_t;
 
 			% Save parameters.
 			out.cell__p_r__N = p.cell__p_r__N.*ones_t;
@@ -234,6 +303,9 @@ classdef multiscale
 			out.mass__c_1 = p.mass__c_1.*ones_t;
 			out.mass__c_2 = p.mass__c_2.*ones_t;
 			out.mass__c_3 = p.mass__c_3.*ones_t;
+			out.bio__y = p.bio__y.*ones_t;
+			out.bio__s_f = p.bio__s_f.*ones_t;
+			out.bio__nOD = p.bio__nOD.*ones_t;
 
 		end
 		function plot(~,out)
@@ -425,6 +497,79 @@ classdef multiscale
 			subplot(2,1,2);
 			plot(out.t, out.mass__m_h);
 			title("mass__m_h");
+			ylim([0, +inf]);
+			grid on;
+
+			figure('Name','bio');
+			subplot(4,3,1);
+			plot(out.t, out.bio__m_p);
+			title("bio__m_p");
+			ylim([0, +inf]);
+			grid on;
+
+			subplot(4,3,2);
+			plot(out.t, out.bio__mu);
+			title("bio__mu");
+			ylim([0, +inf]);
+			grid on;
+
+			subplot(4,3,3);
+			plot(out.t, out.bio__F_in);
+			title("bio__F_in");
+			ylim([0, +inf]);
+			grid on;
+
+			subplot(4,3,4);
+			plot(out.t, out.bio__F_out);
+			title("bio__F_out");
+			ylim([0, +inf]);
+			grid on;
+
+			subplot(4,3,5);
+			plot(out.t, out.bio__V);
+			title("bio__V");
+			ylim([0, +inf]);
+			grid on;
+
+			subplot(4,3,6);
+			plot(out.t, out.bio__V_feed);
+			title("bio__V_feed");
+			ylim([0, +inf]);
+			grid on;
+
+			subplot(4,3,7);
+			plot(out.t, out.bio__V_out);
+			title("bio__V_out");
+			ylim([0, +inf]);
+			grid on;
+
+			subplot(4,3,8);
+			plot(out.t, out.bio__N);
+			title("bio__N");
+			ylim([0, +inf]);
+			grid on;
+
+			subplot(4,3,9);
+			plot(out.t, out.bio__x);
+			title("bio__x");
+			ylim([0, +inf]);
+			grid on;
+
+			subplot(4,3,10);
+			plot(out.t, out.bio__OD);
+			title("bio__OD");
+			ylim([0, +inf]);
+			grid on;
+
+			subplot(4,3,11);
+			plot(out.t, out.bio__s);
+			title("bio__s");
+			ylim([0, +inf]);
+			grid on;
+
+			subplot(4,3,12);
+			plot(out.t, out.bio__S);
+			title("bio__S");
 			ylim([0, +inf]);
 			grid on;
 
