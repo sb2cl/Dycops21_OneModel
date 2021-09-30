@@ -41,8 +41,6 @@
       <species id="cell__J_sum_E" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__phi_b_t" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__r" compartment="default_compartment" initialConcentration="350" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="mass__mu" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="mass__m_h" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
     </listOfSpecies>
     <listOfParameters>
       <parameter id="__t_end" value="10000" units="per_second" constant="true"/>
@@ -65,8 +63,6 @@
       <parameter id="cell__nu_max" value="1260" units="per_second" constant="true"/>
       <parameter id="cell__m_aa" value="1.826e-07" units="per_second" constant="true"/>
       <parameter id="cell__phi_t" value="0.9473" units="per_second" constant="true"/>
-      <parameter id="mass__mp_mp0" value="773.748" units="per_second" constant="true"/>
-      <parameter id="mass__mp_beta" value="61.7813" units="per_second" constant="true"/>
     </listOfParameters>
     <listOfRules>
       <assignmentRule id="cell__p_r___R0" variable="cell__p_r__K_C0">
@@ -415,35 +411,14 @@
           </apply>
         </math>
       </algebraicRule>
-      <assignmentRule id="mass___R24" variable="mass__m_h">
+      <assignmentRule id="_R24" variable="cell__m_h">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <times/>
-            <ci> mass__mp_mp0 </ci>
-            <apply>
-              <exp/>
-              <apply>
-                <times/>
-                <ci> mass__mp_beta </ci>
-                <ci> mass__mu </ci>
-              </apply>
-            </apply>
-          </apply>
+          <cn type="integer"> 450 </cn>
         </math>
       </assignmentRule>
       <assignmentRule id="cell__nu_eq" variable="cell__nu">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <ci> cell__nu_max </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="_R25" variable="cell__m_h">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> mass__m_h </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="_R26" variable="mass__mu">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__mu </ci>
         </math>
       </assignmentRule>
     </listOfRules>

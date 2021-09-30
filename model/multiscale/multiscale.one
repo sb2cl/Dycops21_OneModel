@@ -1,15 +1,39 @@
 import './metabolic/wild_type.one'
+
+# Mass equations.
 import './mass_equation/mass_interpolated.one'
 import './mass_equation/mass_eq_jesus.one'
 
+# Mass equation: 'interpolated', 'jesus' or 'fix'.
+mass_equation = 'interpolated'
+
+# Simulation time.
 parameter __t_end = 10000
 
 cell = WildType()
-mass = MassEqJesus()
+
+if strcmp(mass_equation, 'interpolated')
+  mass = MassInterpolated()
+
+  rule 
+    mass.mu := cell.mu
+    cell.m_h := mass.m_h
+  end
+end
+
+if strcmp(mass_equation, 'jesus')
+  mass = MassEqJesus()
+
+  rule 
+    mass.mu := cell.mu
+    cell.m_h := mass.m_h
+  end
+end
+
+if strcmp(mass_equation, 'fix')
+  rule cell.m_h := 450 #fg
+end
 
 rule
   cell.nu_eq: cell.nu := cell.nu_max
-  cell.m_h := mass.m_h
-
-  mass.mu := cell.mu
 end
