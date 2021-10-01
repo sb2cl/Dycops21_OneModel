@@ -1,0 +1,27 @@
+import '../metabolic/protein.one'
+
+model HeterologousProtein(Protein)
+  # Model of expression of a heterologous protein in E.coli.
+
+  parameter
+    N = 1 
+    omega = 10
+    d_m = 0.16
+    k_b = 4.7627
+    k_u = 119.7956
+    l_p = 195
+  end
+
+end
+
+standalone
+  p_A = HeterologousProtein() 
+
+  rule
+    p_A.nu := 1
+    p_A.mu := 1
+    p_A.r := 1
+    p_A.m_h := 1
+    p_A.J_host_sum := 1
+  end
+end
