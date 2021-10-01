@@ -55,6 +55,8 @@
       <species id="bio__OD" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="bio__s" compartment="default_compartment" initialConcentration="3.6" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="bio__S" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="bio__x_ref" compartment="default_compartment" initialConcentration="1" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="bio__D" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
     </listOfSpecies>
     <listOfParameters>
       <parameter id="__t_end" value="10000" units="per_second" constant="true"/>
@@ -558,27 +560,48 @@
           </apply>
         </math>
       </rateRule>
-      <assignmentRule id="bio___R35" variable="bio__F_in">
+      <assignmentRule id="bio___R35" variable="bio__D">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <cn type="integer"> 0 </cn>
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> bio__mu </ci>
+              <ci> bio__x </ci>
+            </apply>
+            <ci> bio__x_ref </ci>
+          </apply>
         </math>
       </assignmentRule>
-      <assignmentRule id="bio___R36" variable="bio__F_out">
+      <assignmentRule id="bio___R36" variable="bio__F_in">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <cn type="integer"> 0 </cn>
+          <apply>
+            <times/>
+            <ci> bio__D </ci>
+            <ci> bio__V </ci>
+          </apply>
         </math>
       </assignmentRule>
-      <assignmentRule id="_R37" variable="bio__mu">
+      <assignmentRule id="bio___R37" variable="bio__F_out">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> bio__D </ci>
+            <ci> bio__V </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="_R38" variable="bio__mu">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <ci> cell__mu </ci>
         </math>
       </assignmentRule>
-      <assignmentRule id="_R38" variable="bio__m_p">
+      <assignmentRule id="_R39" variable="bio__m_p">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <ci> cell__m_p </ci>
         </math>
       </assignmentRule>
-      <assignmentRule id="_R39" variable="cell__s">
+      <assignmentRule id="_R40" variable="cell__s">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <ci> bio__s </ci>
         </math>
