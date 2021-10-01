@@ -28,7 +28,7 @@ model Bioreactor
     # Total volume removed from the bioreactor (litre).
     V_out = 0
     # Concentration of cells in the bioreactor (litre).
-    N = 0.05
+    N = 0.005
     # Concentration of biomass in the biorreactor (gram/litre).
     x = 0
     # Optical densisity in the biorreactor (OD).

@@ -2,6 +2,7 @@
 
 # Cell model.
 import './metabolic/wild_type.one'
+import './synthetic_circuit/one_protein.one'
 
 # Mass equations.
 import './mass_equation/mass_interpolated.one'
@@ -14,11 +15,14 @@ import './bioreactor/fedbatch.one'
 
 ### META-MODEL OPTIONS ###
 
+# Cell model: 'wild_type' or 'one_protein'
+cell_model = 'one_protein'
+
 # Mass equation: 'interpolated', 'jesus' or 'fix'.
 mass_equation = 'interpolated'
 
 # Bioreactor type: 'nu_fix', 'substrate_fix', 'batch' or 'continous'.
-bioreactor = 'fedbatch'
+bioreactor = 'continous'
 
 # Simulation time.
 parameter __t_end = 10000
@@ -26,8 +30,13 @@ parameter __t_end = 10000
 
 ### CELL BURDEN MODEL ###
 
-cell = WildType()
+if strcmp(cell_model, 'wild_type')
+  cell = WildType()
+end
 
+if strcmp(cell_model, 'one_protein')
+  cell = OneProtein()
+end
 
 ### MASS EQUATION ###
 
