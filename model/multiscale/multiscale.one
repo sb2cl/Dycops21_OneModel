@@ -10,6 +10,7 @@ import './mass_equation/mass_eq_jesus.one'
 # Bioreactors.
 import './bioreactor/batch.one'
 import './bioreactor/continous.one'
+import './bioreactor/fedbatch.one'
 
 ### META-MODEL OPTIONS ###
 
@@ -17,7 +18,7 @@ import './bioreactor/continous.one'
 mass_equation = 'interpolated'
 
 # Bioreactor type: 'nu_fix', 'substrate_fix', 'batch' or 'continous'.
-bioreactor = 'continous'
+bioreactor = 'fedbatch'
 
 # Simulation time.
 parameter __t_end = 10000
@@ -81,6 +82,16 @@ end
 
 if strcmp(bioreactor, 'continous')
   bio = Continous()
+
+  rule
+    bio.mu := cell.mu
+    bio.m_p := cell.m_p
+    cell.s := bio.s
+  end
+end
+
+if strcmp(bioreactor, 'fedbatch')
+  bio = Fedbatch()
 
   rule
     bio.mu := cell.mu
