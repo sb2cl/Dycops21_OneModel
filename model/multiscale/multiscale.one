@@ -16,13 +16,13 @@ import './bioreactor/fedbatch.one'
 ### META-MODEL OPTIONS ###
 
 # Cell model: 'wild_type' or 'one_protein'
-cell_model = 'one_protein'
+cell_model = 'wild_type'
 
 # Mass equation: 'interpolated', 'jesus' or 'fix'.
 mass_equation = 'interpolated'
 
 # Bioreactor type: 'nu_fix', 'substrate_fix', 'batch' or 'continous'.
-bioreactor = 'continous'
+bioreactor = 'nu_fix'
 
 # Simulation time.
 parameter __t_end = 10000
@@ -68,7 +68,7 @@ end
 if strcmp(bioreactor, 'nu_fix')
   rule
     # Override nu equation in cell (aa/minute).
-    cell.nu_eq: cell.nu := 1260 
+    cell.nu_eq: cell.nu := cell.nu_max
   end
 end
 

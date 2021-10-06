@@ -6,7 +6,7 @@ model HeterologousProtein(Protein)
 
   parameter
     N = 1 
-    omega = 10
+    omega = 100
     d_m = 0.16
     k_b = 4.7627
     k_u = 119.7956

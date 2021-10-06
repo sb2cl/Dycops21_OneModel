@@ -41,54 +41,30 @@ classdef multiscale
 			p.cell__nu_max = 1260.0;
 			p.cell__m_aa = 1.826e-07;
 			p.cell__phi_t = 0.9473;
-			p.cell__p_A__N = 1.0;
-			p.cell__p_A__omega = 10.0;
-			p.cell__p_A__d_m = 0.16;
-			p.cell__p_A__k_b = 4.7627;
-			p.cell__p_A__k_u = 119.7956;
-			p.cell__p_A__l_p = 195.0;
-			p.cell__p_A__l_e = 25.0;
 			p.mass__c_1 = 239089.0;
 			p.mass__c_2 = 7432.0;
 			p.mass__c_3 = 37.06;
-			p.bio__y = 0.45;
-			p.bio__s_f = 3.6;
-			p.bio__nOD = 1.0;
 		end
 
 		function x0 = initial_conditions(~)
 			%% Default initial conditions.
 			x0 = [
+				0.0 % cell__s
 				100.0 % cell__p_r__m
 				100.0 % cell__p_nr__m
 				0.01 % cell__mu (algebraic)
 				350.0 % cell__r (algebraic)
-				100.0 % cell__p_A__m
-				1.0 % bio__V
-				0.0 % bio__V_feed
-				0.0 % bio__V_out
-				0.005 % bio__N
-				3.6 % bio__s
-				0.0 % bio__S
-				1.0 % bio__x_ref
 			];
 		end
 
 		function M = mass_matrix(~)
 			%% Mass matrix for DAE systems.
 			M = [
-				1 0 0 0 0 0 0 0 0 0 0 0 
-				0 1 0 0 0 0 0 0 0 0 0 0 
-				0 0 0 0 0 0 0 0 0 0 0 0 
-				0 0 0 0 0 0 0 0 0 0 0 0 
-				0 0 0 0 1 0 0 0 0 0 0 0 
-				0 0 0 0 0 1 0 0 0 0 0 0 
-				0 0 0 0 0 0 1 0 0 0 0 0 
-				0 0 0 0 0 0 0 1 0 0 0 0 
-				0 0 0 0 0 0 0 0 1 0 0 0 
-				0 0 0 0 0 0 0 0 0 1 0 0 
-				0 0 0 0 0 0 0 0 0 0 1 0 
-				0 0 0 0 0 0 0 0 0 0 0 1 
+				1 0 0 0 0 
+				0 1 0 0 0 
+				0 0 1 0 0 
+				0 0 0 0 0 
+				0 0 0 0 0 
 			];
 		end
 
@@ -110,21 +86,13 @@ classdef multiscale
 			%	 dx Array with the ODE.
 
 			% ODE and algebraic states:
-			cell__p_r__m = x(1,:);
-			cell__p_nr__m = x(2,:);
-			cell__mu = x(3,:);
-			cell__r = x(4,:);
-			cell__p_A__m = x(5,:);
-			bio__V = x(6,:);
-			bio__V_feed = x(7,:);
-			bio__V_out = x(8,:);
-			bio__N = x(9,:);
-			bio__s = x(10,:);
-			bio__S = x(11,:);
-			bio__x_ref = x(12,:);
+			cell__s = x(1,:);
+			cell__p_r__m = x(2,:);
+			cell__p_nr__m = x(3,:);
+			cell__mu = x(4,:);
+			cell__r = x(5,:);
 
 			% Assigment states:
-			cell__s = bio__s;
 			cell__p_r__mu = cell__mu;
 			cell__p_r__r = cell__r;
 			cell__p_r__E_m = 3.459;
@@ -132,21 +100,10 @@ classdef multiscale
 			cell__p_nr__mu = cell__mu;
 			cell__p_nr__r = cell__r;
 			cell__p_nr__E_m = 6.3492;
-			cell__nu = p.cell__nu_max.*cell__s./(cell__s + p.cell__K_s);
-			cell__m_p = cell__p_r__m + cell__p_nr__m + cell__p_A__m;
-			cell__p_A__nu = cell__nu;
-			cell__p_A__mu = cell__mu;
-			cell__p_A__r = cell__r;
-			cell__p_A__K_C0 = p.cell__p_A__k_b./(p.cell__p_A__k_u + cell__p_A__nu./p.cell__p_A__l_e);
-			cell__p_A__E_m = 0.62.*p.cell__p_A__l_p./p.cell__p_A__l_e;
-			cell__p_A__J = cell__p_A__E_m.*p.cell__p_A__omega./(p.cell__p_A__d_m./cell__p_A__K_C0 + cell__p_A__mu.*cell__p_A__r);
+			cell__nu = p.cell__nu_max;
+			cell__m_p = cell__p_r__m + cell__p_nr__m;
 			mass__mu = cell__mu;
 			mass__m_h = p.mass__c_1.*mass__mu.*mass__mu + p.mass__c_2.*mass__mu + p.mass__c_3;
-			bio__m_p = cell__m_p;
-			bio__mu = cell__mu;
-			bio__x = bio__N.*bio__m_p.*1e-3;
-			bio__OD = bio__N./p.bio__nOD;
-			bio__D = bio__mu.*bio__x./bio__x_ref;
 			cell__m_h = mass__m_h;
 			cell__p_r__nu = cell__nu;
 			cell__p_r__m_h = cell__m_h;
@@ -156,52 +113,27 @@ classdef multiscale
 			cell__p_nr__m_h = cell__m_h;
 			cell__p_nr__K_C0 = p.cell__p_nr__k_b./(p.cell__p_nr__k_u + cell__p_nr__nu./p.cell__p_nr__l_e);
 			cell__p_nr__J = cell__p_nr__E_m.*p.cell__p_nr__omega./(p.cell__p_nr__d_m./cell__p_nr__K_C0 + cell__p_nr__mu.*cell__p_nr__r);
-			cell__J_sum = p.cell__p_r__N.*cell__p_r__J + p.cell__p_nr__N.*cell__p_nr__J + p.cell__p_A__N.*cell__p_A__J;
+			cell__J_sum = p.cell__p_r__N.*cell__p_r__J + p.cell__p_nr__N.*cell__p_nr__J;
 			cell__J_host_sum = p.cell__p_r__N.*cell__p_r__J + p.cell__p_nr__N.*cell__p_nr__J;
-			cell__J_sum_E = p.cell__p_r__N.*(1 + 1./cell__p_r__E_m).*cell__p_r__J + p.cell__p_nr__N.*(1 + 1./cell__p_nr__E_m).*cell__p_nr__J + p.cell__p_A__N.*(1 + 1./cell__p_A__E_m).*cell__p_A__J;
+			cell__J_sum_E = p.cell__p_r__N.*(1 + 1./cell__p_r__E_m).*cell__p_r__J + p.cell__p_nr__N.*(1 + 1./cell__p_nr__E_m).*cell__p_nr__J;
 			cell__phi_b_t = cell__J_host_sum./(1 + cell__J_sum_E);
-			cell__p_A__m_h = cell__m_h;
-			cell__p_A__J_host_sum = cell__J_host_sum;
-			bio__F_in = bio__D.*bio__V;
-			bio__F_out = bio__D.*bio__V;
 			cell__p_r__J_host_sum = cell__J_host_sum;
 			cell__p_nr__J_host_sum = cell__J_host_sum;
 
+			% der(cell__s)
+			dx(1,1) = 0;
+
 			% der(cell__p_r__m)
-			dx(1,1) = (cell__p_r__m_h.*p.cell__p_r__N.*cell__p_r__J./cell__p_r__J_host_sum - cell__p_r__m).*cell__p_r__mu;
+			dx(2,1) = (cell__p_r__m_h.*p.cell__p_r__N.*cell__p_r__J./cell__p_r__J_host_sum - cell__p_r__m).*cell__p_r__mu;
 
 			% der(cell__p_nr__m)
-			dx(2,1) = (cell__p_nr__m_h.*p.cell__p_nr__N.*cell__p_nr__J./cell__p_nr__J_host_sum - cell__p_nr__m).*cell__p_nr__mu;
+			dx(3,1) = (cell__p_nr__m_h.*p.cell__p_nr__N.*cell__p_nr__J./cell__p_nr__J_host_sum - cell__p_nr__m).*cell__p_nr__mu;
 
 			% der(cell__mu)
-			dx(3,1) = cell__mu - (p.cell__m_aa./cell__m_h).*cell__nu.*cell__phi_b_t.*p.cell__phi_t.*cell__p_r__r_t;
+			dx(4,1) = cell__mu - (p.cell__m_aa./cell__m_h).*cell__nu.*cell__phi_b_t.*p.cell__phi_t.*cell__p_r__r_t;
 
 			% der(cell__r)
-			dx(4,1) = cell__r - p.cell__phi_t.*cell__p_r__r_t./(1 + cell__J_sum_E);
-
-			% der(cell__p_A__m)
-			dx(5,1) = (cell__p_A__m_h.*p.cell__p_A__N.*cell__p_A__J./cell__p_A__J_host_sum - cell__p_A__m).*cell__p_A__mu;
-
-			% der(bio__V)
-			dx(6,1) = bio__F_in - bio__F_out;
-
-			% der(bio__V_feed)
-			dx(7,1) = bio__F_in;
-
-			% der(bio__V_out)
-			dx(8,1) = bio__F_out;
-
-			% der(bio__N)
-			dx(9,1) = bio__mu.*bio__N - (bio__F_in./bio__V).*bio__N;
-
-			% der(bio__s)
-			dx(10,1) = (bio__F_in./bio__V).*(p.bio__s_f - bio__s) - (1./p.bio__y).*bio__mu.*bio__x;
-
-			% der(bio__S)
-			dx(11,1) = bio__F_out.*bio__s;
-
-			% der(bio__x_ref)
-			dx(12,1) = 0;
+			dx(5,1) = cell__r - p.cell__phi_t.*cell__p_r__r_t./(1 + cell__J_sum_E);
 
 		end
 		function out = simout2struct(~,t,x,p)
@@ -210,21 +142,13 @@ classdef multiscale
 			% We need to transpose state matrix.
 			x = x';
 			% ODE and algebraic states:
-			cell__p_r__m = x(1,:);
-			cell__p_nr__m = x(2,:);
-			cell__mu = x(3,:);
-			cell__r = x(4,:);
-			cell__p_A__m = x(5,:);
-			bio__V = x(6,:);
-			bio__V_feed = x(7,:);
-			bio__V_out = x(8,:);
-			bio__N = x(9,:);
-			bio__s = x(10,:);
-			bio__S = x(11,:);
-			bio__x_ref = x(12,:);
+			cell__s = x(1,:);
+			cell__p_r__m = x(2,:);
+			cell__p_nr__m = x(3,:);
+			cell__mu = x(4,:);
+			cell__r = x(5,:);
 
 			% Assigment states:
-			cell__s = bio__s;
 			cell__p_r__mu = cell__mu;
 			cell__p_r__r = cell__r;
 			cell__p_r__E_m = 3.459;
@@ -232,21 +156,10 @@ classdef multiscale
 			cell__p_nr__mu = cell__mu;
 			cell__p_nr__r = cell__r;
 			cell__p_nr__E_m = 6.3492;
-			cell__nu = p.cell__nu_max.*cell__s./(cell__s + p.cell__K_s);
-			cell__m_p = cell__p_r__m + cell__p_nr__m + cell__p_A__m;
-			cell__p_A__nu = cell__nu;
-			cell__p_A__mu = cell__mu;
-			cell__p_A__r = cell__r;
-			cell__p_A__K_C0 = p.cell__p_A__k_b./(p.cell__p_A__k_u + cell__p_A__nu./p.cell__p_A__l_e);
-			cell__p_A__E_m = 0.62.*p.cell__p_A__l_p./p.cell__p_A__l_e;
-			cell__p_A__J = cell__p_A__E_m.*p.cell__p_A__omega./(p.cell__p_A__d_m./cell__p_A__K_C0 + cell__p_A__mu.*cell__p_A__r);
+			cell__nu = p.cell__nu_max;
+			cell__m_p = cell__p_r__m + cell__p_nr__m;
 			mass__mu = cell__mu;
 			mass__m_h = p.mass__c_1.*mass__mu.*mass__mu + p.mass__c_2.*mass__mu + p.mass__c_3;
-			bio__m_p = cell__m_p;
-			bio__mu = cell__mu;
-			bio__x = bio__N.*bio__m_p.*1e-3;
-			bio__OD = bio__N./p.bio__nOD;
-			bio__D = bio__mu.*bio__x./bio__x_ref;
 			cell__m_h = mass__m_h;
 			cell__p_r__nu = cell__nu;
 			cell__p_r__m_h = cell__m_h;
@@ -256,14 +169,10 @@ classdef multiscale
 			cell__p_nr__m_h = cell__m_h;
 			cell__p_nr__K_C0 = p.cell__p_nr__k_b./(p.cell__p_nr__k_u + cell__p_nr__nu./p.cell__p_nr__l_e);
 			cell__p_nr__J = cell__p_nr__E_m.*p.cell__p_nr__omega./(p.cell__p_nr__d_m./cell__p_nr__K_C0 + cell__p_nr__mu.*cell__p_nr__r);
-			cell__J_sum = p.cell__p_r__N.*cell__p_r__J + p.cell__p_nr__N.*cell__p_nr__J + p.cell__p_A__N.*cell__p_A__J;
+			cell__J_sum = p.cell__p_r__N.*cell__p_r__J + p.cell__p_nr__N.*cell__p_nr__J;
 			cell__J_host_sum = p.cell__p_r__N.*cell__p_r__J + p.cell__p_nr__N.*cell__p_nr__J;
-			cell__J_sum_E = p.cell__p_r__N.*(1 + 1./cell__p_r__E_m).*cell__p_r__J + p.cell__p_nr__N.*(1 + 1./cell__p_nr__E_m).*cell__p_nr__J + p.cell__p_A__N.*(1 + 1./cell__p_A__E_m).*cell__p_A__J;
+			cell__J_sum_E = p.cell__p_r__N.*(1 + 1./cell__p_r__E_m).*cell__p_r__J + p.cell__p_nr__N.*(1 + 1./cell__p_nr__E_m).*cell__p_nr__J;
 			cell__phi_b_t = cell__J_host_sum./(1 + cell__J_sum_E);
-			cell__p_A__m_h = cell__m_h;
-			cell__p_A__J_host_sum = cell__J_host_sum;
-			bio__F_in = bio__D.*bio__V;
-			bio__F_out = bio__D.*bio__V;
 			cell__p_r__J_host_sum = cell__J_host_sum;
 			cell__p_nr__J_host_sum = cell__J_host_sum;
 
@@ -304,31 +213,8 @@ classdef multiscale
 			out.cell__J_sum_E = cell__J_sum_E.*ones_t;
 			out.cell__phi_b_t = cell__phi_b_t.*ones_t;
 			out.cell__r = cell__r.*ones_t;
-			out.cell__p_A__nu = cell__p_A__nu.*ones_t;
-			out.cell__p_A__mu = cell__p_A__mu.*ones_t;
-			out.cell__p_A__r = cell__p_A__r.*ones_t;
-			out.cell__p_A__m_h = cell__p_A__m_h.*ones_t;
-			out.cell__p_A__J_host_sum = cell__p_A__J_host_sum.*ones_t;
-			out.cell__p_A__K_C0 = cell__p_A__K_C0.*ones_t;
-			out.cell__p_A__E_m = cell__p_A__E_m.*ones_t;
-			out.cell__p_A__J = cell__p_A__J.*ones_t;
-			out.cell__p_A__m = cell__p_A__m.*ones_t;
 			out.mass__mu = mass__mu.*ones_t;
 			out.mass__m_h = mass__m_h.*ones_t;
-			out.bio__m_p = bio__m_p.*ones_t;
-			out.bio__mu = bio__mu.*ones_t;
-			out.bio__F_in = bio__F_in.*ones_t;
-			out.bio__F_out = bio__F_out.*ones_t;
-			out.bio__V = bio__V.*ones_t;
-			out.bio__V_feed = bio__V_feed.*ones_t;
-			out.bio__V_out = bio__V_out.*ones_t;
-			out.bio__N = bio__N.*ones_t;
-			out.bio__x = bio__x.*ones_t;
-			out.bio__OD = bio__OD.*ones_t;
-			out.bio__s = bio__s.*ones_t;
-			out.bio__S = bio__S.*ones_t;
-			out.bio__x_ref = bio__x_ref.*ones_t;
-			out.bio__D = bio__D.*ones_t;
 
 			% Save parameters.
 			out.cell__p_r__N = p.cell__p_r__N.*ones_t;
@@ -350,19 +236,9 @@ classdef multiscale
 			out.cell__nu_max = p.cell__nu_max.*ones_t;
 			out.cell__m_aa = p.cell__m_aa.*ones_t;
 			out.cell__phi_t = p.cell__phi_t.*ones_t;
-			out.cell__p_A__N = p.cell__p_A__N.*ones_t;
-			out.cell__p_A__omega = p.cell__p_A__omega.*ones_t;
-			out.cell__p_A__d_m = p.cell__p_A__d_m.*ones_t;
-			out.cell__p_A__k_b = p.cell__p_A__k_b.*ones_t;
-			out.cell__p_A__k_u = p.cell__p_A__k_u.*ones_t;
-			out.cell__p_A__l_p = p.cell__p_A__l_p.*ones_t;
-			out.cell__p_A__l_e = p.cell__p_A__l_e.*ones_t;
 			out.mass__c_1 = p.mass__c_1.*ones_t;
 			out.mass__c_2 = p.mass__c_2.*ones_t;
 			out.mass__c_3 = p.mass__c_3.*ones_t;
-			out.bio__y = p.bio__y.*ones_t;
-			out.bio__s_f = p.bio__s_f.*ones_t;
-			out.bio__nOD = p.bio__nOD.*ones_t;
 
 		end
 		function plot(~,out)
@@ -544,61 +420,6 @@ classdef multiscale
 			ylim([0, +inf]);
 			grid on;
 
-			figure('Name','cell__p_A');
-			subplot(3,3,1);
-			plot(out.t, out.cell__p_A__nu);
-			title("cell__p_A__nu");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(3,3,2);
-			plot(out.t, out.cell__p_A__mu);
-			title("cell__p_A__mu");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(3,3,3);
-			plot(out.t, out.cell__p_A__r);
-			title("cell__p_A__r");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(3,3,4);
-			plot(out.t, out.cell__p_A__m_h);
-			title("cell__p_A__m_h");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(3,3,5);
-			plot(out.t, out.cell__p_A__J_host_sum);
-			title("cell__p_A__J_host_sum");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(3,3,6);
-			plot(out.t, out.cell__p_A__K_C0);
-			title("cell__p_A__K_C0");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(3,3,7);
-			plot(out.t, out.cell__p_A__E_m);
-			title("cell__p_A__E_m");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(3,3,8);
-			plot(out.t, out.cell__p_A__J);
-			title("cell__p_A__J");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(3,3,9);
-			plot(out.t, out.cell__p_A__m);
-			title("cell__p_A__m");
-			ylim([0, +inf]);
-			grid on;
-
 			figure('Name','mass');
 			subplot(2,1,1);
 			plot(out.t, out.mass__mu);
@@ -609,91 +430,6 @@ classdef multiscale
 			subplot(2,1,2);
 			plot(out.t, out.mass__m_h);
 			title("mass__m_h");
-			ylim([0, +inf]);
-			grid on;
-
-			figure('Name','bio');
-			subplot(4,4,1);
-			plot(out.t, out.bio__m_p);
-			title("bio__m_p");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,4,2);
-			plot(out.t, out.bio__mu);
-			title("bio__mu");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,4,3);
-			plot(out.t, out.bio__F_in);
-			title("bio__F_in");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,4,4);
-			plot(out.t, out.bio__F_out);
-			title("bio__F_out");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,4,5);
-			plot(out.t, out.bio__V);
-			title("bio__V");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,4,6);
-			plot(out.t, out.bio__V_feed);
-			title("bio__V_feed");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,4,7);
-			plot(out.t, out.bio__V_out);
-			title("bio__V_out");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,4,8);
-			plot(out.t, out.bio__N);
-			title("bio__N");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,4,9);
-			plot(out.t, out.bio__x);
-			title("bio__x");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,4,10);
-			plot(out.t, out.bio__OD);
-			title("bio__OD");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,4,11);
-			plot(out.t, out.bio__s);
-			title("bio__s");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,4,12);
-			plot(out.t, out.bio__S);
-			title("bio__S");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,4,13);
-			plot(out.t, out.bio__x_ref);
-			title("bio__x_ref");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,4,14);
-			plot(out.t, out.bio__D);
-			title("bio__D");
 			ylim([0, +inf]);
 			grid on;
 
