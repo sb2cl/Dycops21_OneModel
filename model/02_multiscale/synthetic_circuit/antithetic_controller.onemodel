@@ -1,4 +1,5 @@
 import '../protein/base_protein.onemodel'
+import '../protein/induced_protein.onemodel'
 import '../metabolic/wild_type.onemodel'
 
 model AntitheticController(WildType)
@@ -6,8 +7,11 @@ model AntitheticController(WildType)
   z1  = BaseProtein()
   z2  = BaseProtein()
   z12 = BaseProtein()
-  x   = BaseProtein()
+  x   = InducedProtein()
 
+  parameter
+    z1.omega = 0
+  end
   # Add protein z1 to the model.
   rule
     z1.nu := nu
@@ -42,6 +46,7 @@ model AntitheticController(WildType)
     x.r := r
     x.m_h := m_h
     x.J_host_sum := J_host_sum
+    x.TF := z1.m
   end
 
   # Override equations.

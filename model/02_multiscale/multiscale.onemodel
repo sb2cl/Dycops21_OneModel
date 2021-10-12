@@ -19,10 +19,10 @@ import './bioreactor/fedbatch.onemodel'
 # Cell model: 'wild_type', 'one_protein', 'antithetic'.
 cell_model = 'one_protein'
 
-# Mass equation: 'interpolated', 'jesus' or 'fix'.
+# Mass equation: 'interpolated', 'jesus', 'fix'.
 mass_equation = 'interpolated'
 
-# Bioreactor type: 'nu_fix', 'substrate_fix', 'batch' or 'continous'.
+# Bioreactor type: 'nu_fix', 'substrate_fix', 'batch', 'continous'.
 bioreactor = 'nu_fix'
 
 # Simulation time.
