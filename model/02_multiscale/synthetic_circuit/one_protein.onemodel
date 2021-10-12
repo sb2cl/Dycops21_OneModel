@@ -1,24 +1,10 @@
-import '../metabolic/protein.onemodel'
+import '../protein/base_protein.onemodel'
 import '../metabolic/wild_type.onemodel'
-
-model HeterologousProtein(Protein)
-  # Model of expression of a heterologous protein in E.coli.
-
-  parameter
-    N = 1 
-    omega = 100
-    d_m = 0.16
-    k_b = 4.7627
-    k_u = 119.7956
-    l_p = 195
-  end
-
-end
 
 model OneProtein(WildType)
 
   # Create protein A.
-  p_A = HeterologousProtein()
+  p_A = BaseProtein()
 
   # Add protein A to the model.
   rule

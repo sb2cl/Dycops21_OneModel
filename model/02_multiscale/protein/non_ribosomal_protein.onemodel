@@ -1,6 +1,6 @@
-import './protein.onemodel'
+import './base_protein.onemodel'
 
-model ProteinNonRibosomal(Protein)
+model NonRibosomalProtein(BaseProtein)
   # Model of average expression of non-ribosomal proteins in E.coli.
 
   parameter
@@ -18,13 +18,13 @@ model ProteinNonRibosomal(Protein)
 end
 
 standalone
-  p_nr = ProteinNonRibosomal() 
+  no_ribo = NonRibosomalProtein() 
 
   rule
-    p_nr.nu := 1
-    p_nr.mu := 1
-    p_nr.r := 1
-    p_nr.m_h := 1
-    p_nr.J_host_sum := 1
+    no_ribo.nu := 1
+    no_ribo.mu := 1
+    no_ribo.r := 1
+    no_ribo.m_h := 1
+    no_ribo.J_host_sum := 1
   end
 end

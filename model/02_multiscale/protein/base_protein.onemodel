@@ -1,5 +1,13 @@
-model Protein
-  # Model of expression of a single protein.
+model BaseProtein
+  # This model defines the base for protein expression.
+  #
+  # This model just defines the parameter and the species which are needed to
+  # fullfill to ensure that the protein can be added to the metabolic-burden
+  # model. All protein expression models must be child of this model.
+  #
+  # The parameter and initial condition values set are just a placeholder to
+  # allow to quickly simulate, you will have to override them with your own
+  # values.
 
   input
     # Effective translation rate per ribosome (aa/minute).
@@ -16,17 +24,17 @@ model Protein
 
   parameter
     # Number of copies of the gene (molec/cell).
-    N 
+    N = 1
     # Promoter transcription rate (molec/minute/cell).
-    omega 
+    omega = 100
     # Mean degradation rate of mRNA (1/minute).
-    d_m
+    d_m = 0.16
     # Association rate RBS-ribosome (cell/minute/molec).
-    k_b
+    k_b = 4.7627
     # Dissotiation rate RBS-ribosome (1/minute).
-    k_u
+    k_u = 119.7956
     # Protein length (aa).
-    l_p
+    l_p = 195
     # Ribosome occupancy length (aa).
     l_e = 25
   end
@@ -43,9 +51,9 @@ model Protein
   end
 
   rule
-    K_C0 := k_b/(k_u + nu/l_e)
-    E_m_eq: E_m := 0.62*l_p/l_e
-    J := E_m*omega/(d_m/K_C0 + mu*r)
-    m' = (m_h*N*J/J_host_sum - m)*mu
+            K_C0 := k_b/(k_u + nu/l_e)
+    E_m_eq: E_m  := 0.62*l_p/l_e
+    J_eq:   J    := E_m*omega/(d_m/K_C0 + mu*r)  
+    m_eq:   m    '= (m_h*N*J/J_host_sum - m)*mu
   end
 end

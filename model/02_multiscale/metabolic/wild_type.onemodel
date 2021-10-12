@@ -1,5 +1,5 @@
-import 'protein_ribosomal.onemodel'
-import 'protein_non_ribosomal.onemodel'
+import '../protein/ribosomal_protein.onemodel'
+import '../protein/non_ribosomal_protein.onemodel'
 
 model WildType
   # Model of a wild-type E.coli. cell.
@@ -11,7 +11,7 @@ model WildType
     m_h
   end
 
-  p_r = ProteinRibosomal()
+  p_r = RibosomalProtein()
 
   rule
     p_r.nu := nu
@@ -21,7 +21,7 @@ model WildType
     p_r.J_host_sum := J_host_sum
   end
 
-  p_nr = ProteinNonRibosomal()
+  p_nr = NonRibosomalProtein()
 
   rule
     p_nr.nu := nu

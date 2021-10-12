@@ -1,6 +1,6 @@
-import './protein.onemodel'
+import './base_protein.onemodel'
 
-model ProteinRibosomal(Protein)
+model RibosomalProtein(BaseProtein)
   # Model of average expression of ribosomal proteins in E.coli.
 
   parameter
@@ -22,18 +22,18 @@ model ProteinRibosomal(Protein)
 
   rule
     E_m_eq: E_m := 3.459
-    r_t := m/weigth
+            r_t := m/weigth
   end
 end
 
 standalone
-  p_nr = ProteinRibosomal() 
+  ribo = RibosomalProtein() 
 
   rule
-    p_nr.nu := 1
-    p_nr.mu := 1
-    p_nr.r := 1
-    p_nr.m_h := 1
-    p_nr.J_host_sum := 1
+    ribo.nu := 1
+    ribo.mu := 1
+    ribo.r := 1
+    ribo.m_h := 1
+    ribo.J_host_sum := 1
   end
 end
