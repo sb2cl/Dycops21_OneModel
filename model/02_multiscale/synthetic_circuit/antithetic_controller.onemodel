@@ -1,36 +1,12 @@
-import '../metabolic/protein.onemodel'
+import '../protein/base_protein.onemodel'
 import '../metabolic/wild_type.onemodel'
-
-model HeterologousProtein(Protein)
-  # Model of expression of a heterologous protein in E.coli.
-
-  parameter
-    N = 1 
-    omega = 100
-    d_m = 0.16
-    k_b = 4.7627
-    k_u = 119.7956
-    l_p = 195
-  end
-
-end
 
 model AntitheticController(WildType)
   # Create protein A.
-  z1  = HeterologousProtein()
-  z2  = HeterologousProtein()
-  z12 = HeterologousProtein()
-  x   = HeterologousProtein()
-
-  species
-    z2.omega = 0
-    x.omega = 0
-  end
-
-  rule 
-    z2.omega := 100*x.m
-    x.omega := 100*z1.m
-  end
+  z1  = BaseProtein()
+  z2  = BaseProtein()
+  z12 = BaseProtein()
+  x   = BaseProtein()
 
   # Add protein z1 to the model.
   rule
