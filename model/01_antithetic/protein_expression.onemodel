@@ -1,0 +1,34 @@
+model ProteinExpression
+  species
+    # mRNA concentration ().
+    mRNA = 0
+    # Protein concentration ().
+    protein = 0
+  end
+  
+  parameter
+    # mRNA transcription rate (). 
+    omega = 1
+    # mRNA degradation rate ().
+    phi = 1
+    # Protein translation rate ().
+    k = 1
+    # Protein degradation rate ().
+    d = 1
+  end
+  
+  reaction
+    # mRNA transcription.
+    0 -> mRNA; omega
+    # mRNA degradation.
+    mRNA -> 0; phi*mRNA
+    # Protein translation.
+    mRNA -> mRNA + protein; k*mRNA
+    # Protein degradation.
+    protein -> 0; d*protein
+  end
+end
+
+standalone
+  GFP = ProteinExpression()
+end

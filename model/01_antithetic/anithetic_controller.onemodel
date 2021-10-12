@@ -1,0 +1,30 @@
+import './protein_expression.onemodel'
+import './protein_expression_induced.onemodel'
+
+z1  = ProteinExpression()
+z2  = ProteinExpressionInduced()
+z12 = ProteinExpressionInduced()
+x   = ProteinExpressionInduced()
+
+species
+  z_tot = 0
+end
+
+parameter
+  __t_end = 100
+  gamma = 1
+  z1.d = 0
+  z2.d = 0
+  x.omega_max = 10
+  z12.omega = 0
+end
+
+reaction
+  z1.protein + z2.protein -> z12.protein ; gamma*z1.protein*z2.protein
+end
+
+rule
+  x.TF  := z1.protein
+  z2.TF := x.protein
+  z_tot := z1.protein + z2.protein + z12.protein
+end
