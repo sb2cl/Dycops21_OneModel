@@ -79,13 +79,16 @@ classdef antithetic_controller
 		function x0 = initial_conditions(~)
 			%% Default initial conditions.
 			x0 = [
+				0.0 % cell__p_r__extend
 				100.0 % cell__p_r__m
+				0.0 % cell__p_nr__extend
 				100.0 % cell__p_nr__m
 				0.01 % cell__mu (algebraic)
 				350.0 % cell__r (algebraic)
 				0.0 % cell__z1__m
 				0.0 % cell__z2__m
 				0.0 % cell__z12__m
+				0.0 % cell__x__extend
 				0.0 % cell__x__m
 			];
 		end
@@ -93,14 +96,17 @@ classdef antithetic_controller
 		function M = mass_matrix(~)
 			%% Mass matrix for DAE systems.
 			M = [
-				1 0 0 0 0 0 0 0 
-				0 1 0 0 0 0 0 0 
-				0 0 0 0 0 0 0 0 
-				0 0 0 0 0 0 0 0 
-				0 0 0 0 1 0 0 0 
-				0 0 0 0 0 1 0 0 
-				0 0 0 0 0 0 1 0 
-				0 0 0 0 0 0 0 1 
+				1 0 0 0 0 0 0 0 0 0 0 
+				0 1 0 0 0 0 0 0 0 0 0 
+				0 0 1 0 0 0 0 0 0 0 0 
+				0 0 0 1 0 0 0 0 0 0 0 
+				0 0 0 0 0 0 0 0 0 0 0 
+				0 0 0 0 0 0 0 0 0 0 0 
+				0 0 0 0 0 0 1 0 0 0 0 
+				0 0 0 0 0 0 0 1 0 0 0 
+				0 0 0 0 0 0 0 0 1 0 0 
+				0 0 0 0 0 0 0 0 0 1 0 
+				0 0 0 0 0 0 0 0 0 0 1 
 			];
 		end
 
@@ -122,14 +128,17 @@ classdef antithetic_controller
 			%	 dx Array with the ODE.
 
 			% ODE and algebraic states:
-			cell__p_r__m = x(1,:);
-			cell__p_nr__m = x(2,:);
-			cell__mu = x(3,:);
-			cell__r = x(4,:);
-			cell__z1__m = x(5,:);
-			cell__z2__m = x(6,:);
-			cell__z12__m = x(7,:);
-			cell__x__m = x(8,:);
+			cell__p_r__extend = x(1,:);
+			cell__p_r__m = x(2,:);
+			cell__p_nr__extend = x(3,:);
+			cell__p_nr__m = x(4,:);
+			cell__mu = x(5,:);
+			cell__r = x(6,:);
+			cell__z1__m = x(7,:);
+			cell__z2__m = x(8,:);
+			cell__z12__m = x(9,:);
+			cell__x__extend = x(10,:);
+			cell__x__m = x(11,:);
 
 			% Assigment states:
 			cell__s = p.s;
@@ -149,6 +158,7 @@ classdef antithetic_controller
 			cell__z1__mu = cell__mu;
 			cell__z1__r = cell__r;
 			cell__z1__m_h = cell__m_h;
+			cell__z1__extend =  - p.cell__gamma.*cell__z1__m.*cell__z2__m;
 			cell__z1__K_C0 = p.cell__z1__k_b./(p.cell__z1__k_u + cell__z1__nu./p.cell__z1__l_e);
 			cell__z1__E_m = 0.62.*p.cell__z1__l_p./p.cell__z1__l_e;
 			cell__z1__J = cell__z1__E_m.*p.cell__z1__omega./(p.cell__z1__d_m./cell__z1__K_C0 + cell__z1__mu.*cell__z1__r);
@@ -156,6 +166,7 @@ classdef antithetic_controller
 			cell__z2__mu = cell__mu;
 			cell__z2__r = cell__r;
 			cell__z2__m_h = cell__m_h;
+			cell__z2__extend =  - p.cell__gamma.*cell__z1__m.*cell__z2__m;
 			cell__z2__K_C0 = p.cell__z2__k_b./(p.cell__z2__k_u + cell__z2__nu./p.cell__z2__l_e);
 			cell__z2__E_m = 0.62.*p.cell__z2__l_p./p.cell__z2__l_e;
 			cell__z2__TF = cell__x__m;
@@ -163,6 +174,7 @@ classdef antithetic_controller
 			cell__z12__mu = cell__mu;
 			cell__z12__r = cell__r;
 			cell__z12__m_h = cell__m_h;
+			cell__z12__extend = p.cell__gamma.*cell__z1__m.*cell__z2__m;
 			cell__z12__K_C0 = p.cell__z12__k_b./(p.cell__z12__k_u + cell__z12__nu./p.cell__z12__l_e);
 			cell__z12__E_m = 0.62.*p.cell__z12__l_p./p.cell__z12__l_e;
 			cell__z12__J = cell__z12__E_m.*p.cell__z12__omega./(p.cell__z12__d_m./cell__z12__K_C0 + cell__z12__mu.*cell__z12__r);
@@ -195,29 +207,38 @@ classdef antithetic_controller
 			cell__J_sum_E = p.cell__p_r__N.*(1 + 1./cell__p_r__E_m).*cell__p_r__J + p.cell__p_nr__N.*(1 + 1./cell__p_nr__E_m).*cell__p_nr__J + p.cell__z1__N.*(1 + 1./cell__z1__E_m).*cell__z1__J + p.cell__z2__N.*(1 + 1./cell__z2__E_m).*cell__z2__J + p.cell__z12__N.*(1 + 1./cell__z12__E_m).*cell__z12__J + p.cell__x__N.*(1 + 1./cell__x__E_m).*cell__x__J;
 			cell__phi_b_t = cell__J_host_sum./(1 + cell__J_sum_E);
 
+			% der(cell__p_r__extend)
+			dx(1,1) = 0;
+
 			% der(cell__p_r__m)
-			dx(1,1) = (cell__p_r__m_h.*p.cell__p_r__N.*cell__p_r__J./cell__p_r__J_host_sum - cell__p_r__m).*cell__p_r__mu;
+			dx(2,1) = (cell__p_r__m_h.*p.cell__p_r__N.*cell__p_r__J./cell__p_r__J_host_sum - cell__p_r__m).*cell__p_r__mu + cell__p_r__extend;
+
+			% der(cell__p_nr__extend)
+			dx(3,1) = 0;
 
 			% der(cell__p_nr__m)
-			dx(2,1) = (cell__p_nr__m_h.*p.cell__p_nr__N.*cell__p_nr__J./cell__p_nr__J_host_sum - cell__p_nr__m).*cell__p_nr__mu;
+			dx(4,1) = (cell__p_nr__m_h.*p.cell__p_nr__N.*cell__p_nr__J./cell__p_nr__J_host_sum - cell__p_nr__m).*cell__p_nr__mu + cell__p_nr__extend;
 
 			% der(cell__mu)
-			dx(3,1) = cell__mu - (p.cell__m_aa./cell__m_h).*cell__nu.*cell__phi_b_t.*p.cell__phi_t.*cell__p_r__r_t;
+			dx(5,1) = cell__mu - (p.cell__m_aa./cell__m_h).*cell__nu.*cell__phi_b_t.*p.cell__phi_t.*cell__p_r__r_t;
 
 			% der(cell__r)
-			dx(4,1) = cell__r - p.cell__phi_t.*cell__p_r__r_t./(1 + cell__J_sum_E);
+			dx(6,1) = cell__r - p.cell__phi_t.*cell__p_r__r_t./(1 + cell__J_sum_E);
 
 			% der(cell__z1__m)
-			dx(5,1) = (cell__m_h.*p.cell__z1__N.*cell__z1__J./cell__J_host_sum - cell__z1__m).*cell__mu - p.cell__gamma.*cell__z1__m.*cell__z2__m;
+			dx(7,1) = (cell__z1__m_h.*p.cell__z1__N.*cell__z1__J./cell__z1__J_host_sum - cell__z1__m).*cell__z1__mu + cell__z1__extend;
 
 			% der(cell__z2__m)
-			dx(6,1) = (cell__m_h.*p.cell__z2__N.*cell__z2__J./cell__J_host_sum - cell__z2__m).*cell__mu - p.cell__gamma.*cell__z1__m.*cell__z2__m;
+			dx(8,1) = (cell__z2__m_h.*p.cell__z2__N.*cell__z2__J./cell__z2__J_host_sum - cell__z2__m).*cell__z2__mu + cell__z2__extend;
 
 			% der(cell__z12__m)
-			dx(7,1) = (cell__m_h.*p.cell__z12__N.*cell__z12__J./cell__J_host_sum - cell__z12__m).*cell__mu + p.cell__gamma.*cell__z1__m.*cell__z2__m;
+			dx(9,1) = (cell__z12__m_h.*p.cell__z12__N.*cell__z12__J./cell__z12__J_host_sum - cell__z12__m).*cell__z12__mu + cell__z12__extend;
+
+			% der(cell__x__extend)
+			dx(10,1) = 0;
 
 			% der(cell__x__m)
-			dx(8,1) = (cell__x__m_h.*p.cell__x__N.*cell__x__J./cell__x__J_host_sum - cell__x__m).*cell__x__mu;
+			dx(11,1) = (cell__x__m_h.*p.cell__x__N.*cell__x__J./cell__x__J_host_sum - cell__x__m).*cell__x__mu + cell__x__extend;
 
 		end
 		function out = simout2struct(~,t,x,p)
@@ -226,14 +247,17 @@ classdef antithetic_controller
 			% We need to transpose state matrix.
 			x = x';
 			% ODE and algebraic states:
-			cell__p_r__m = x(1,:);
-			cell__p_nr__m = x(2,:);
-			cell__mu = x(3,:);
-			cell__r = x(4,:);
-			cell__z1__m = x(5,:);
-			cell__z2__m = x(6,:);
-			cell__z12__m = x(7,:);
-			cell__x__m = x(8,:);
+			cell__p_r__extend = x(1,:);
+			cell__p_r__m = x(2,:);
+			cell__p_nr__extend = x(3,:);
+			cell__p_nr__m = x(4,:);
+			cell__mu = x(5,:);
+			cell__r = x(6,:);
+			cell__z1__m = x(7,:);
+			cell__z2__m = x(8,:);
+			cell__z12__m = x(9,:);
+			cell__x__extend = x(10,:);
+			cell__x__m = x(11,:);
 
 			% Assigment states:
 			cell__s = p.s;
@@ -253,6 +277,7 @@ classdef antithetic_controller
 			cell__z1__mu = cell__mu;
 			cell__z1__r = cell__r;
 			cell__z1__m_h = cell__m_h;
+			cell__z1__extend =  - p.cell__gamma.*cell__z1__m.*cell__z2__m;
 			cell__z1__K_C0 = p.cell__z1__k_b./(p.cell__z1__k_u + cell__z1__nu./p.cell__z1__l_e);
 			cell__z1__E_m = 0.62.*p.cell__z1__l_p./p.cell__z1__l_e;
 			cell__z1__J = cell__z1__E_m.*p.cell__z1__omega./(p.cell__z1__d_m./cell__z1__K_C0 + cell__z1__mu.*cell__z1__r);
@@ -260,6 +285,7 @@ classdef antithetic_controller
 			cell__z2__mu = cell__mu;
 			cell__z2__r = cell__r;
 			cell__z2__m_h = cell__m_h;
+			cell__z2__extend =  - p.cell__gamma.*cell__z1__m.*cell__z2__m;
 			cell__z2__K_C0 = p.cell__z2__k_b./(p.cell__z2__k_u + cell__z2__nu./p.cell__z2__l_e);
 			cell__z2__E_m = 0.62.*p.cell__z2__l_p./p.cell__z2__l_e;
 			cell__z2__TF = cell__x__m;
@@ -267,6 +293,7 @@ classdef antithetic_controller
 			cell__z12__mu = cell__mu;
 			cell__z12__r = cell__r;
 			cell__z12__m_h = cell__m_h;
+			cell__z12__extend = p.cell__gamma.*cell__z1__m.*cell__z2__m;
 			cell__z12__K_C0 = p.cell__z12__k_b./(p.cell__z12__k_u + cell__z12__nu./p.cell__z12__l_e);
 			cell__z12__E_m = 0.62.*p.cell__z12__l_p./p.cell__z12__l_e;
 			cell__z12__J = cell__z12__E_m.*p.cell__z12__omega./(p.cell__z12__d_m./cell__z12__K_C0 + cell__z12__mu.*cell__z12__r);
@@ -314,6 +341,7 @@ classdef antithetic_controller
 			out.cell__p_r__r = (cell__p_r__r.*ones_t)';
 			out.cell__p_r__m_h = (cell__p_r__m_h.*ones_t)';
 			out.cell__p_r__J_host_sum = (cell__p_r__J_host_sum.*ones_t)';
+			out.cell__p_r__extend = (cell__p_r__extend.*ones_t)';
 			out.cell__p_r__K_C0 = (cell__p_r__K_C0.*ones_t)';
 			out.cell__p_r__E_m = (cell__p_r__E_m.*ones_t)';
 			out.cell__p_r__J = (cell__p_r__J.*ones_t)';
@@ -324,6 +352,7 @@ classdef antithetic_controller
 			out.cell__p_nr__r = (cell__p_nr__r.*ones_t)';
 			out.cell__p_nr__m_h = (cell__p_nr__m_h.*ones_t)';
 			out.cell__p_nr__J_host_sum = (cell__p_nr__J_host_sum.*ones_t)';
+			out.cell__p_nr__extend = (cell__p_nr__extend.*ones_t)';
 			out.cell__p_nr__K_C0 = (cell__p_nr__K_C0.*ones_t)';
 			out.cell__p_nr__E_m = (cell__p_nr__E_m.*ones_t)';
 			out.cell__p_nr__J = (cell__p_nr__J.*ones_t)';
@@ -341,6 +370,7 @@ classdef antithetic_controller
 			out.cell__z1__r = (cell__z1__r.*ones_t)';
 			out.cell__z1__m_h = (cell__z1__m_h.*ones_t)';
 			out.cell__z1__J_host_sum = (cell__z1__J_host_sum.*ones_t)';
+			out.cell__z1__extend = (cell__z1__extend.*ones_t)';
 			out.cell__z1__K_C0 = (cell__z1__K_C0.*ones_t)';
 			out.cell__z1__E_m = (cell__z1__E_m.*ones_t)';
 			out.cell__z1__J = (cell__z1__J.*ones_t)';
@@ -350,6 +380,7 @@ classdef antithetic_controller
 			out.cell__z2__r = (cell__z2__r.*ones_t)';
 			out.cell__z2__m_h = (cell__z2__m_h.*ones_t)';
 			out.cell__z2__J_host_sum = (cell__z2__J_host_sum.*ones_t)';
+			out.cell__z2__extend = (cell__z2__extend.*ones_t)';
 			out.cell__z2__omega = (cell__z2__omega.*ones_t)';
 			out.cell__z2__K_C0 = (cell__z2__K_C0.*ones_t)';
 			out.cell__z2__E_m = (cell__z2__E_m.*ones_t)';
@@ -361,6 +392,7 @@ classdef antithetic_controller
 			out.cell__z12__r = (cell__z12__r.*ones_t)';
 			out.cell__z12__m_h = (cell__z12__m_h.*ones_t)';
 			out.cell__z12__J_host_sum = (cell__z12__J_host_sum.*ones_t)';
+			out.cell__z12__extend = (cell__z12__extend.*ones_t)';
 			out.cell__z12__K_C0 = (cell__z12__K_C0.*ones_t)';
 			out.cell__z12__E_m = (cell__z12__E_m.*ones_t)';
 			out.cell__z12__J = (cell__z12__J.*ones_t)';
@@ -370,6 +402,7 @@ classdef antithetic_controller
 			out.cell__x__r = (cell__x__r.*ones_t)';
 			out.cell__x__m_h = (cell__x__m_h.*ones_t)';
 			out.cell__x__J_host_sum = (cell__x__J_host_sum.*ones_t)';
+			out.cell__x__extend = (cell__x__extend.*ones_t)';
 			out.cell__x__omega = (cell__x__omega.*ones_t)';
 			out.cell__x__K_C0 = (cell__x__K_C0.*ones_t)';
 			out.cell__x__E_m = (cell__x__E_m.*ones_t)';
@@ -534,140 +567,158 @@ classdef antithetic_controller
 			grid on;
 
 			subplot(4,3,6);
+			plot(out.t, out.cell__p_r__extend);
+			title("cell__p_r__extend");
+			ylim([0, +inf]);
+			grid on;
+
+			subplot(4,3,7);
 			plot(out.t, out.cell__p_r__K_C0);
 			title("cell__p_r__K_C0");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,7);
+			subplot(4,3,8);
 			plot(out.t, out.cell__p_r__E_m);
 			title("cell__p_r__E_m");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,8);
+			subplot(4,3,9);
 			plot(out.t, out.cell__p_r__J);
 			title("cell__p_r__J");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,9);
+			subplot(4,3,10);
 			plot(out.t, out.cell__p_r__m);
 			title("cell__p_r__m");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,10);
+			subplot(4,3,11);
 			plot(out.t, out.cell__p_r__r_t);
 			title("cell__p_r__r_t");
 			ylim([0, +inf]);
 			grid on;
 
 			figure('Name','cell__p_nr');
-			subplot(3,3,1);
+			subplot(4,3,1);
 			plot(out.t, out.cell__p_nr__nu);
 			title("cell__p_nr__nu");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,2);
+			subplot(4,3,2);
 			plot(out.t, out.cell__p_nr__mu);
 			title("cell__p_nr__mu");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,3);
+			subplot(4,3,3);
 			plot(out.t, out.cell__p_nr__r);
 			title("cell__p_nr__r");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,4);
+			subplot(4,3,4);
 			plot(out.t, out.cell__p_nr__m_h);
 			title("cell__p_nr__m_h");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,5);
+			subplot(4,3,5);
 			plot(out.t, out.cell__p_nr__J_host_sum);
 			title("cell__p_nr__J_host_sum");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,6);
+			subplot(4,3,6);
+			plot(out.t, out.cell__p_nr__extend);
+			title("cell__p_nr__extend");
+			ylim([0, +inf]);
+			grid on;
+
+			subplot(4,3,7);
 			plot(out.t, out.cell__p_nr__K_C0);
 			title("cell__p_nr__K_C0");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,7);
+			subplot(4,3,8);
 			plot(out.t, out.cell__p_nr__E_m);
 			title("cell__p_nr__E_m");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,8);
+			subplot(4,3,9);
 			plot(out.t, out.cell__p_nr__J);
 			title("cell__p_nr__J");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,9);
+			subplot(4,3,10);
 			plot(out.t, out.cell__p_nr__m);
 			title("cell__p_nr__m");
 			ylim([0, +inf]);
 			grid on;
 
 			figure('Name','cell__z1');
-			subplot(3,3,1);
+			subplot(4,3,1);
 			plot(out.t, out.cell__z1__nu);
 			title("cell__z1__nu");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,2);
+			subplot(4,3,2);
 			plot(out.t, out.cell__z1__mu);
 			title("cell__z1__mu");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,3);
+			subplot(4,3,3);
 			plot(out.t, out.cell__z1__r);
 			title("cell__z1__r");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,4);
+			subplot(4,3,4);
 			plot(out.t, out.cell__z1__m_h);
 			title("cell__z1__m_h");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,5);
+			subplot(4,3,5);
 			plot(out.t, out.cell__z1__J_host_sum);
 			title("cell__z1__J_host_sum");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,6);
+			subplot(4,3,6);
+			plot(out.t, out.cell__z1__extend);
+			title("cell__z1__extend");
+			ylim([0, +inf]);
+			grid on;
+
+			subplot(4,3,7);
 			plot(out.t, out.cell__z1__K_C0);
 			title("cell__z1__K_C0");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,7);
+			subplot(4,3,8);
 			plot(out.t, out.cell__z1__E_m);
 			title("cell__z1__E_m");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,8);
+			subplot(4,3,9);
 			plot(out.t, out.cell__z1__J);
 			title("cell__z1__J");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,9);
+			subplot(4,3,10);
 			plot(out.t, out.cell__z1__m);
 			title("cell__z1__m");
 			ylim([0, +inf]);
@@ -705,91 +756,103 @@ classdef antithetic_controller
 			grid on;
 
 			subplot(4,3,6);
+			plot(out.t, out.cell__z2__extend);
+			title("cell__z2__extend");
+			ylim([0, +inf]);
+			grid on;
+
+			subplot(4,3,7);
 			plot(out.t, out.cell__z2__omega);
 			title("cell__z2__omega");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,7);
+			subplot(4,3,8);
 			plot(out.t, out.cell__z2__K_C0);
 			title("cell__z2__K_C0");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,8);
+			subplot(4,3,9);
 			plot(out.t, out.cell__z2__E_m);
 			title("cell__z2__E_m");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,9);
+			subplot(4,3,10);
 			plot(out.t, out.cell__z2__J);
 			title("cell__z2__J");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,10);
+			subplot(4,3,11);
 			plot(out.t, out.cell__z2__m);
 			title("cell__z2__m");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,11);
+			subplot(4,3,12);
 			plot(out.t, out.cell__z2__TF);
 			title("cell__z2__TF");
 			ylim([0, +inf]);
 			grid on;
 
 			figure('Name','cell__z12');
-			subplot(3,3,1);
+			subplot(4,3,1);
 			plot(out.t, out.cell__z12__nu);
 			title("cell__z12__nu");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,2);
+			subplot(4,3,2);
 			plot(out.t, out.cell__z12__mu);
 			title("cell__z12__mu");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,3);
+			subplot(4,3,3);
 			plot(out.t, out.cell__z12__r);
 			title("cell__z12__r");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,4);
+			subplot(4,3,4);
 			plot(out.t, out.cell__z12__m_h);
 			title("cell__z12__m_h");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,5);
+			subplot(4,3,5);
 			plot(out.t, out.cell__z12__J_host_sum);
 			title("cell__z12__J_host_sum");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,6);
+			subplot(4,3,6);
+			plot(out.t, out.cell__z12__extend);
+			title("cell__z12__extend");
+			ylim([0, +inf]);
+			grid on;
+
+			subplot(4,3,7);
 			plot(out.t, out.cell__z12__K_C0);
 			title("cell__z12__K_C0");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,7);
+			subplot(4,3,8);
 			plot(out.t, out.cell__z12__E_m);
 			title("cell__z12__E_m");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,8);
+			subplot(4,3,9);
 			plot(out.t, out.cell__z12__J);
 			title("cell__z12__J");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(3,3,9);
+			subplot(4,3,10);
 			plot(out.t, out.cell__z12__m);
 			title("cell__z12__m");
 			ylim([0, +inf]);
@@ -827,36 +890,42 @@ classdef antithetic_controller
 			grid on;
 
 			subplot(4,3,6);
+			plot(out.t, out.cell__x__extend);
+			title("cell__x__extend");
+			ylim([0, +inf]);
+			grid on;
+
+			subplot(4,3,7);
 			plot(out.t, out.cell__x__omega);
 			title("cell__x__omega");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,7);
+			subplot(4,3,8);
 			plot(out.t, out.cell__x__K_C0);
 			title("cell__x__K_C0");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,8);
+			subplot(4,3,9);
 			plot(out.t, out.cell__x__E_m);
 			title("cell__x__E_m");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,9);
+			subplot(4,3,10);
 			plot(out.t, out.cell__x__J);
 			title("cell__x__J");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,10);
+			subplot(4,3,11);
 			plot(out.t, out.cell__x__m);
 			title("cell__x__m");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,11);
+			subplot(4,3,12);
 			plot(out.t, out.cell__x__TF);
 			title("cell__x__TF");
 			ylim([0, +inf]);

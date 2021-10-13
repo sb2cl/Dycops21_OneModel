@@ -55,11 +55,11 @@ model AntitheticController(WildType)
   end
 
   rule
-               x.TF := z1.m
-              z2.TF := x.m
-    z1.m_eq:   z1.m '= (m_h*z1.N*z1.J/J_host_sum - z1.m)*mu - gamma*z1.m*z2.m
-    z2.m_eq:   z2.m '= (m_h*z2.N*z2.J/J_host_sum - z2.m)*mu - gamma*z1.m*z2.m
-    z12.m_eq: z12.m '= (m_h*z12.N*z12.J/J_host_sum - z12.m)*mu + gamma*z1.m*z2.m
+    x.TF := z1.m
+    z2.TF := x.m
+    z1.extend := -gamma*z1.m*z2.m
+    z2.extend := -gamma*z1.m*z2.m
+    z12.extend := +gamma*z1.m*z2.m
   end
 
   # Override equations.

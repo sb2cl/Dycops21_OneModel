@@ -19,6 +19,7 @@
       <species id="cell__p_r__r" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__p_r__m_h" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__p_r__J_host_sum" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="cell__p_r__extend" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__p_r__K_C0" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__p_r__E_m" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__p_r__J" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
@@ -29,6 +30,7 @@
       <species id="cell__p_nr__r" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__p_nr__m_h" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__p_nr__J_host_sum" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="cell__p_nr__extend" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__p_nr__K_C0" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__p_nr__E_m" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__p_nr__J" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
@@ -46,6 +48,7 @@
       <species id="cell__z1__r" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__z1__m_h" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__z1__J_host_sum" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="cell__z1__extend" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__z1__K_C0" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__z1__E_m" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__z1__J" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
@@ -55,6 +58,7 @@
       <species id="cell__z2__r" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__z2__m_h" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__z2__J_host_sum" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="cell__z2__extend" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__z2__omega" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__z2__K_C0" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__z2__E_m" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
@@ -66,6 +70,7 @@
       <species id="cell__z12__r" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__z12__m_h" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__z12__J_host_sum" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="cell__z12__extend" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__z12__K_C0" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__z12__E_m" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__z12__J" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
@@ -75,6 +80,7 @@
       <species id="cell__x__r" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__x__m_h" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__x__J_host_sum" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="cell__x__extend" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__x__omega" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__x__K_C0" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="cell__x__E_m" compartment="default_compartment" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
@@ -189,22 +195,26 @@
       <rateRule id="cell__p_r__m_eq" variable="cell__p_r__m">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
+            <plus/>
             <apply>
-              <minus/>
+              <times/>
               <apply>
-                <divide/>
+                <minus/>
                 <apply>
-                  <times/>
-                  <ci> cell__p_r__m_h </ci>
-                  <ci> cell__p_r__N </ci>
-                  <ci> cell__p_r__J </ci>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> cell__p_r__m_h </ci>
+                    <ci> cell__p_r__N </ci>
+                    <ci> cell__p_r__J </ci>
+                  </apply>
+                  <ci> cell__p_r__J_host_sum </ci>
                 </apply>
-                <ci> cell__p_r__J_host_sum </ci>
+                <ci> cell__p_r__m </ci>
               </apply>
-              <ci> cell__p_r__m </ci>
+              <ci> cell__p_r__mu </ci>
             </apply>
-            <ci> cell__p_r__mu </ci>
+            <ci> cell__p_r__extend </ci>
           </apply>
         </math>
       </rateRule>
@@ -292,22 +302,26 @@
       <rateRule id="cell__p_nr__m_eq" variable="cell__p_nr__m">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
+            <plus/>
             <apply>
-              <minus/>
+              <times/>
               <apply>
-                <divide/>
+                <minus/>
                 <apply>
-                  <times/>
-                  <ci> cell__p_nr__m_h </ci>
-                  <ci> cell__p_nr__N </ci>
-                  <ci> cell__p_nr__J </ci>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> cell__p_nr__m_h </ci>
+                    <ci> cell__p_nr__N </ci>
+                    <ci> cell__p_nr__J </ci>
+                  </apply>
+                  <ci> cell__p_nr__J_host_sum </ci>
                 </apply>
-                <ci> cell__p_nr__J_host_sum </ci>
+                <ci> cell__p_nr__m </ci>
               </apply>
-              <ci> cell__p_nr__m </ci>
+              <ci> cell__p_nr__mu </ci>
             </apply>
-            <ci> cell__p_nr__mu </ci>
+            <ci> cell__p_nr__extend </ci>
           </apply>
         </math>
       </rateRule>
@@ -623,22 +637,26 @@
       <rateRule id="cell__z1__m_eq" variable="cell__z1__m">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
+            <plus/>
             <apply>
-              <minus/>
+              <times/>
               <apply>
-                <divide/>
+                <minus/>
                 <apply>
-                  <times/>
-                  <ci> cell__z1__m_h </ci>
-                  <ci> cell__z1__N </ci>
-                  <ci> cell__z1__J </ci>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> cell__z1__m_h </ci>
+                    <ci> cell__z1__N </ci>
+                    <ci> cell__z1__J </ci>
+                  </apply>
+                  <ci> cell__z1__J_host_sum </ci>
                 </apply>
-                <ci> cell__z1__J_host_sum </ci>
+                <ci> cell__z1__m </ci>
               </apply>
-              <ci> cell__z1__m </ci>
+              <ci> cell__z1__mu </ci>
             </apply>
-            <ci> cell__z1__mu </ci>
+            <ci> cell__z1__extend </ci>
           </apply>
         </math>
       </rateRule>
@@ -700,22 +718,26 @@
       <rateRule id="cell__z2__m_eq" variable="cell__z2__m">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
+            <plus/>
             <apply>
-              <minus/>
+              <times/>
               <apply>
-                <divide/>
+                <minus/>
                 <apply>
-                  <times/>
-                  <ci> cell__z2__m_h </ci>
-                  <ci> cell__z2__N </ci>
-                  <ci> cell__z2__J </ci>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> cell__z2__m_h </ci>
+                    <ci> cell__z2__N </ci>
+                    <ci> cell__z2__J </ci>
+                  </apply>
+                  <ci> cell__z2__J_host_sum </ci>
                 </apply>
-                <ci> cell__z2__J_host_sum </ci>
+                <ci> cell__z2__m </ci>
               </apply>
-              <ci> cell__z2__m </ci>
+              <ci> cell__z2__mu </ci>
             </apply>
-            <ci> cell__z2__mu </ci>
+            <ci> cell__z2__extend </ci>
           </apply>
         </math>
       </rateRule>
@@ -790,22 +812,26 @@
       <rateRule id="cell__z12__m_eq" variable="cell__z12__m">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
+            <plus/>
             <apply>
-              <minus/>
+              <times/>
               <apply>
-                <divide/>
+                <minus/>
                 <apply>
-                  <times/>
-                  <ci> cell__z12__m_h </ci>
-                  <ci> cell__z12__N </ci>
-                  <ci> cell__z12__J </ci>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> cell__z12__m_h </ci>
+                    <ci> cell__z12__N </ci>
+                    <ci> cell__z12__J </ci>
+                  </apply>
+                  <ci> cell__z12__J_host_sum </ci>
                 </apply>
-                <ci> cell__z12__J_host_sum </ci>
+                <ci> cell__z12__m </ci>
               </apply>
-              <ci> cell__z12__m </ci>
+              <ci> cell__z12__mu </ci>
             </apply>
-            <ci> cell__z12__mu </ci>
+            <ci> cell__z12__extend </ci>
           </apply>
         </math>
       </rateRule>
@@ -867,22 +893,26 @@
       <rateRule id="cell__x__m_eq" variable="cell__x__m">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
+            <plus/>
             <apply>
-              <minus/>
+              <times/>
               <apply>
-                <divide/>
+                <minus/>
                 <apply>
-                  <times/>
-                  <ci> cell__x__m_h </ci>
-                  <ci> cell__x__N </ci>
-                  <ci> cell__x__J </ci>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> cell__x__m_h </ci>
+                    <ci> cell__x__N </ci>
+                    <ci> cell__x__J </ci>
+                  </apply>
+                  <ci> cell__x__J_host_sum </ci>
                 </apply>
-                <ci> cell__x__J_host_sum </ci>
+                <ci> cell__x__m </ci>
               </apply>
-              <ci> cell__x__m </ci>
+              <ci> cell__x__mu </ci>
             </apply>
-            <ci> cell__x__mu </ci>
+            <ci> cell__x__extend </ci>
           </apply>
         </math>
       </rateRule>
@@ -1014,100 +1044,43 @@
           <ci> cell__x__m </ci>
         </math>
       </assignmentRule>
-      <rateRule id="cell__z1__m_eq" variable="cell__z1__m">
+      <assignmentRule id="cell___R46" variable="cell__z1__extend">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <minus/>
+            <times/>
             <apply>
-              <times/>
-              <apply>
-                <minus/>
-                <apply>
-                  <divide/>
-                  <apply>
-                    <times/>
-                    <ci> cell__m_h </ci>
-                    <ci> cell__z1__N </ci>
-                    <ci> cell__z1__J </ci>
-                  </apply>
-                  <ci> cell__J_host_sum </ci>
-                </apply>
-                <ci> cell__z1__m </ci>
-              </apply>
-              <ci> cell__mu </ci>
-            </apply>
-            <apply>
-              <times/>
+              <minus/>
               <ci> cell__gamma </ci>
-              <ci> cell__z1__m </ci>
-              <ci> cell__z2__m </ci>
             </apply>
+            <ci> cell__z1__m </ci>
+            <ci> cell__z2__m </ci>
           </apply>
         </math>
-      </rateRule>
-      <rateRule id="cell__z2__m_eq" variable="cell__z2__m">
+      </assignmentRule>
+      <assignmentRule id="cell___R47" variable="cell__z2__extend">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <minus/>
+            <times/>
             <apply>
-              <times/>
-              <apply>
-                <minus/>
-                <apply>
-                  <divide/>
-                  <apply>
-                    <times/>
-                    <ci> cell__m_h </ci>
-                    <ci> cell__z2__N </ci>
-                    <ci> cell__z2__J </ci>
-                  </apply>
-                  <ci> cell__J_host_sum </ci>
-                </apply>
-                <ci> cell__z2__m </ci>
-              </apply>
-              <ci> cell__mu </ci>
-            </apply>
-            <apply>
-              <times/>
+              <minus/>
               <ci> cell__gamma </ci>
-              <ci> cell__z1__m </ci>
-              <ci> cell__z2__m </ci>
             </apply>
+            <ci> cell__z1__m </ci>
+            <ci> cell__z2__m </ci>
           </apply>
         </math>
-      </rateRule>
-      <rateRule id="cell__z12__m_eq" variable="cell__z12__m">
+      </assignmentRule>
+      <assignmentRule id="cell___R48" variable="cell__z12__extend">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <plus/>
-            <apply>
-              <times/>
-              <apply>
-                <minus/>
-                <apply>
-                  <divide/>
-                  <apply>
-                    <times/>
-                    <ci> cell__m_h </ci>
-                    <ci> cell__z12__N </ci>
-                    <ci> cell__z12__J </ci>
-                  </apply>
-                  <ci> cell__J_host_sum </ci>
-                </apply>
-                <ci> cell__z12__m </ci>
-              </apply>
-              <ci> cell__mu </ci>
-            </apply>
-            <apply>
-              <times/>
-              <ci> cell__gamma </ci>
-              <ci> cell__z1__m </ci>
-              <ci> cell__z2__m </ci>
-            </apply>
+            <times/>
+            <ci> cell__gamma </ci>
+            <ci> cell__z1__m </ci>
+            <ci> cell__z2__m </ci>
           </apply>
         </math>
-      </rateRule>
-      <assignmentRule id="cell___R46" variable="cell__ref">
+      </assignmentRule>
+      <assignmentRule id="cell___R49" variable="cell__ref">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <times/>
@@ -1120,12 +1093,12 @@
           </apply>
         </math>
       </assignmentRule>
-      <assignmentRule id="_R47" variable="cell__s">
+      <assignmentRule id="_R50" variable="cell__s">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <ci> s </ci>
         </math>
       </assignmentRule>
-      <assignmentRule id="_R48" variable="cell__m_h">
+      <assignmentRule id="_R51" variable="cell__m_h">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <ci> m_h </ci>
         </math>
