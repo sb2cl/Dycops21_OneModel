@@ -20,6 +20,8 @@ model BaseProtein
     m_h
     # Total sum of RRS in host genes (dimensionless).
     J_host_sum 
+    # Extend protein dynamics (molec/min/cell).
+    extend
   end
 
   parameter
@@ -54,6 +56,6 @@ model BaseProtein
             K_C0 := k_b/(k_u + nu/l_e)
     E_m_eq: E_m  := 0.62*l_p/l_e
     J_eq:   J    := E_m*omega/(d_m/K_C0 + mu*r)  
-    m_eq:   m    '= (m_h*N*J/J_host_sum - m)*mu
+    m_eq:   m    '= (m_h*N*J/J_host_sum - m)*mu + extend
   end
 end

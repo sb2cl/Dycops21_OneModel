@@ -50,8 +50,8 @@ model AntitheticController(WildType)
     gamma = 100
     z1.omega = 1000
     z2.omega_max = 1000
+    # z12 is just produced by the antithetic reaction.
     z12.omega = 0
-    x.omega_max = 100
   end
 
   rule
