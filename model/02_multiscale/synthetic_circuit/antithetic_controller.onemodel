@@ -5,13 +5,10 @@ import '../metabolic/wild_type.onemodel'
 model AntitheticController(WildType)
   # Create protein A.
   z1  = BaseProtein()
-  z2  = BaseProtein()
+  z2  = InducedProtein()
   z12 = BaseProtein()
   x   = InducedProtein()
 
-  parameter
-    z1.omega = 0
-  end
   # Add protein z1 to the model.
   rule
     z1.nu := nu
@@ -49,6 +46,29 @@ model AntitheticController(WildType)
     x.TF := z1.m
   end
 
+  parameter
+    gamma = 100
+    z1.omega = 1000
+    z2.omega_max = 1000
+    z12.omega = 0
+    x.omega_max = 100
+  end
+
+  species
+    z1.m = 0
+    z2.m = 0
+    z12.m = 0
+    x.m = 0
+  end
+
+  rule
+               x.TF := z1.m
+              z2.TF := x.m
+    z1.m_eq:   z1.m '= (m_h*z1.N*z1.J/J_host_sum - z1.m)*mu - gamma*z1.m*z2.m
+    z2.m_eq:   z2.m '= (m_h*z2.N*z2.J/J_host_sum - z2.m)*mu - gamma*z1.m*z2.m
+    z12.m_eq: z12.m '= (m_h*z12.N*z12.J/J_host_sum - z12.m)*mu + gamma*z1.m*z2.m
+  end
+
   # Override equations.
   rule
     m_p_eq:  m_p := p_r.m + p_nr.m + z1.m + z2.m + z12.m + x.m
@@ -61,13 +81,13 @@ model AntitheticController(WildType)
   end
 
   rule
-    ref := z1.omega / z2.omega
+    ref := z1.omega / z2.omega_max *z2.h
   end
 
 end
 
 standalone
-  parameter __t_end = 1000
+  parameter __t_end = 2000
 
   cell = AntitheticController()
 

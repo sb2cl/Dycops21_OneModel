@@ -7,7 +7,7 @@ clear all;
 close all;
 
 % Init model.
-m = antithetic();
+m = antithetic_controller();
 
 % Solver options.
 opt = odeset('AbsTol',1e-8,'RelTol',1e-8);
@@ -20,4 +20,36 @@ tspan = [m.opts.t_init m.opts.t_end];
 out = m.simout2struct(t,x,m.p);
 
 % Plot result.
-m.plot(out);
+figure(1);
+
+subplot(2,2,1);
+
+hold on;
+plot(out.t, out.cell__x__m);
+plot(out.t, out.cell__ref);
+
+grid on;
+title('Output');
+legend('x');
+
+subplot(2,2,2);
+
+hold on;
+plot(out.t, out.cell__mu);
+
+grid on;
+title('Gr');
+legend('x');
+
+subplot(2,2,3);
+
+hold on;
+plot(out.t, out.cell__z1__m);
+plot(out.t, out.cell__z2__m);
+plot(out.t, out.cell__z12__m);
+
+grid on;
+title('Control action');
+legend('z1','z2','z12');
+
+
