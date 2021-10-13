@@ -47,7 +47,7 @@ model BaseProtein
     # Resources recruitment strength (dimensionless).
     J = 0
     # Total mass of this protein in the cell (fg/cell).
-    m = 100
+    m = 0
   end
 
   rule

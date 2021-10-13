@@ -18,6 +18,7 @@ model RibosomalProtein(BaseProtein)
   species
     # Number of mature and inmature ribosomes (molec/cell).
     r_t = 0
+    m = 100
   end
 
   rule

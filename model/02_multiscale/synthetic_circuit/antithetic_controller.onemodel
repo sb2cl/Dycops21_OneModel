@@ -54,13 +54,6 @@ model AntitheticController(WildType)
     x.omega_max = 100
   end
 
-  species
-    z1.m = 0
-    z2.m = 0
-    z12.m = 0
-    x.m = 0
-  end
-
   rule
                x.TF := z1.m
               z2.TF := x.m

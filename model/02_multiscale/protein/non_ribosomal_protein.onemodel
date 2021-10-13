@@ -12,6 +12,10 @@ model NonRibosomalProtein(BaseProtein)
     l_p = 333
   end
 
+  species
+    m = 100
+  end
+
   rule
     E_m_eq: E_m := 6.3492
   end
