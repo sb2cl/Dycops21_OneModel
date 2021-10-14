@@ -1,6 +1,23 @@
 import '../protein/ribosomal_protein.onemodel'
 import '../protein/non_ribosomal_protein.onemodel'
 
+function add_protein(self, p)
+  
+  print(p)
+
+  rule
+    self.R1: p.nu := self.nu
+    self.R2: p.mu := self.mu
+    self.R3: p.r := self.r
+    self.R4: p.m_h := self.m_h
+    self.R5: p.J_host_sum := self.J_host_sum
+  end
+
+  print(p)
+
+  showContext()
+end
+
 model WildType
   # Model of a wild-type E.coli. cell.
 
@@ -13,13 +30,15 @@ model WildType
 
   p_r = RibosomalProtein()
 
-  rule
-    p_r.nu := nu
-    p_r.mu := mu
-    p_r.r := r
-    p_r.m_h := m_h
-    p_r.J_host_sum := J_host_sum
-  end
+  add_protein(self, p_r)
+
+  #rule
+  #  p_r.nu := nu
+  #  p_r.mu := mu
+  #  p_r.r := r
+  #  p_r.m_h := m_h
+  #  p_r.J_host_sum := J_host_sum
+  #end
 
   p_nr = NonRibosomalProtein()
 
@@ -62,7 +81,7 @@ model WildType
   end
 
   rule
-    nu_eq:  nu := nu_max*s/(s + K_s) 
+    nu_eq: nu := nu_max*s/(s + K_s) 
     mu == m_aa/m_h*nu*phi_b_t*phi_t*p_r.r_t
     m_p_eq:  m_p := p_r.m + p_nr.m
     J_sum_eq: J_sum := p_r.N*p_r.J + p_nr.N*p_nr.J

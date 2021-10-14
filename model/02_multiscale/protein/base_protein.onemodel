@@ -59,3 +59,5 @@ model BaseProtein
     m_eq:   m    '= (m_h*N*J/J_host_sum - m)*mu + extend
   end
 end
+
+
