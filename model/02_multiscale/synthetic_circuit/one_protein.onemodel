@@ -8,7 +8,7 @@ model OneProtein(WildType)
 
   # Add protein A to the model.
   rule
-    p_A.nu := nu
+    p_A.nu_t := nu_t
     p_A.mu := mu
     p_A.r := r
     p_A.m_h := m_h

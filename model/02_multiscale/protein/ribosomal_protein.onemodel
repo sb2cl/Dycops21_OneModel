@@ -31,7 +31,7 @@ standalone
   ribo = RibosomalProtein() 
 
   rule
-    ribo.nu := 1
+    ribo.nu_t := 1
     ribo.mu := 1
     ribo.r := 1
     ribo.m_h := 1

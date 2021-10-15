@@ -11,7 +11,7 @@ model BaseProtein
 
   input
     # Effective translation rate per ribosome (aa/minute).
-    nu
+    nu_t
     # Growth rate (1/minute).
     mu
     # Free ribosomes (molec/cell).

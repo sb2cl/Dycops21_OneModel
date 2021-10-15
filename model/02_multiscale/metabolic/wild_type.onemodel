@@ -33,7 +33,7 @@ model WildType
   #add_protein(self, p_r)
 
   rule
-    p_r.nu := nu
+    p_r.nu_t := nu_t
     p_r.mu := mu
     p_r.r := r
     p_r.m_h := m_h
@@ -43,7 +43,7 @@ model WildType
   p_nr = NonRibosomalProtein()
 
   rule
-    p_nr.nu := nu
+    p_nr.nu_t := nu_t
     p_nr.mu := mu
     p_nr.r := r
     p_nr.m_h := m_h
@@ -54,7 +54,7 @@ model WildType
     # Half-activation threshold of growth rate (grams/litre).
     K_s = 0.1802
     # Maximum effective translation rate per ribosome (aa/minute).
-    nu_max = 1260
+    nu = 1260
     # Average aminoacid mass (fg/aa).
     m_aa = 182.6e-9
     # Fraction of mature available ribosomes relative to the total (dimensionless).
@@ -63,7 +63,7 @@ model WildType
 
   species
     # Effective translation rate per ribosome (aa/minute).
-    nu = 0
+    nu_t = 0
     # Specific cell growth rate (1/minute).
     mu = 0.01
     # Total protein mass calculate from the mass of individual proteins in the cell (fg/cell).
@@ -81,8 +81,8 @@ model WildType
   end
 
   rule
-    nu_eq: nu := nu_max*s/(s + K_s) 
-    mu == m_aa/m_h*nu*phi_b_t*phi_t*p_r.r_t
+    nu_eq: nu_t := nu*s/(s + K_s) 
+    mu == m_aa/m_h*nu_t*phi_b_t*phi_t*p_r.r_t
     m_p_eq:  m_p := p_r.m + p_nr.m
     J_sum_eq: J_sum := p_r.N*p_r.J + p_nr.N*p_nr.J
     J_host_sum := p_r.N*p_r.J + p_nr.N*p_nr.J

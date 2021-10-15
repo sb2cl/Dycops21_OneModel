@@ -25,7 +25,7 @@ standalone
   no_ribo = NonRibosomalProtein() 
 
   rule
-    no_ribo.nu := 1
+    no_ribo.nu_t := 1
     no_ribo.mu := 1
     no_ribo.r := 1
     no_ribo.m_h := 1

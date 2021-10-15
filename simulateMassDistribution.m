@@ -29,7 +29,7 @@ OUT = [];
 for i = 1:n
     % We want to use the parameters that give rise to the growth rate we
     % selected.
-    p.cell__nu_max = nu(i);
+    p.cell__nu = nu(i);
     
     % Options for the solver.
     opt = odeset('AbsTol', 1e-8, 'RelTol', 1e-8);
@@ -61,7 +61,7 @@ subplot(3,2,1);
 
 hold on;
 plot(q.nu,q.proteinMass,'s','Color',myColors.array{1});
-plot(OUT.cell__nu,OUT.cell__m_p,'Color',myColors.array{1});
+plot(OUT.cell__nu_t,OUT.cell__m_p,'Color',myColors.array{1});
 grid on;
 title('Cell Mass');
 legend('exp','model','Location','Best');
@@ -71,7 +71,7 @@ subplot(3,2,2);
 
 hold on;
 plot(q.nu,q.mu,'s','Color',myColors.array{1});
-plot(OUT.cell__nu,OUT.cell__mu,'Color',myColors.array{1});
+plot(OUT.cell__nu_t,OUT.cell__mu,'Color',myColors.array{1});
 grid on;
 title('Growth rate');
 legend('exp','model','Location','Best');

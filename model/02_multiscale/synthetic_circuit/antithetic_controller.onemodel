@@ -50,7 +50,7 @@ model AntitheticController(WildType)
 
   # Add protein z1 to the model.
   rule
-    z1.nu := nu
+    z1.nu_t := nu_t
     z1.mu := mu
     z1.r := r
     z1.m_h := m_h
@@ -59,7 +59,7 @@ model AntitheticController(WildType)
 
   # Add protein z2 to the model.
   rule
-    z2.nu := nu
+    z2.nu_t := nu_t
     z2.mu := mu
     z2.r := r
     z2.m_h := m_h
@@ -68,7 +68,7 @@ model AntitheticController(WildType)
 
   # Add protein z12 to the model.
   rule
-    z12.nu := nu
+    z12.nu_t := nu_t
     z12.mu := mu
     z12.r := r
     z12.m_h := m_h
@@ -77,7 +77,7 @@ model AntitheticController(WildType)
 
   # Add protein x to the model.
   rule
-    x.nu := nu
+    x.nu_t := nu_t
     x.mu := mu
     x.r := r
     x.m_h := m_h
