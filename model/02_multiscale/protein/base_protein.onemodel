@@ -56,7 +56,11 @@ model BaseProtein
             K_C0 := k_b/(k_u + nu/l_e)
     E_m_eq: E_m  := 0.62*l_p/l_e
     J_eq:   J    := E_m*omega/(d_m/K_C0 + mu*r)  
-    m_eq:   m    '= (m_h*N*J/J_host_sum - m)*mu + extend
+    #m_eq:   m    '= (m_h*N*J/J_host_sum - m)*mu + extend
+  end
+
+  reaction
+    0 -> m ; (m_h*N*J/J_host_sum - m)*mu
   end
 end
 

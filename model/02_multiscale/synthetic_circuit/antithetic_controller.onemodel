@@ -3,11 +3,50 @@ import '../protein/induced_protein.onemodel'
 import '../metabolic/wild_type.onemodel'
 
 model AntitheticController(WildType)
-  # Create protein A.
+  #                           
+  # 0─►z1─────────┐
+  #     │         ▼
+  #     ├──►z12  0─►x
+  #     │           │ 
+  # 0─►z2           │ 
+  #   ▲             │
+  #   └─────────────┘          
+  #                           
+
+  # Sigma protein.
   z1  = BaseProtein()
+  # Anti-sigma protein.
   z2  = InducedProtein()
+  # Sigma and anti-sigma complex.
   z12 = BaseProtein()
+  # Protein of interest.
   x   = InducedProtein()
+
+  species
+    ref = 0
+  end
+
+  parameter
+    # Antithetic sequestration affininty (1/molec/min).
+    gamma = 100000
+    z1.omega = 10
+    z2.omega_max = 100
+    # z12 is just produced by the antithetic reaction.
+    z12.omega = 0
+    x.omega_max = 100
+  end
+
+  rule
+    x.TF := z1.m
+    z2.TF := x.m
+    ref := z1.omega / z2.omega_max *z2.h
+  end
+
+  reaction
+    z1.m + z2.m -> z12.m ; gamma*z1.m*z2.m
+    #0 -> z1.m ; mu*z1.m
+    #0 -> z2.m ; mu*z2.m
+  end
 
   # Add protein z1 to the model.
   rule
@@ -46,35 +85,11 @@ model AntitheticController(WildType)
     x.TF := z1.m
   end
 
-  parameter
-    gamma = 100
-    z1.omega = 1000
-    z2.omega_max = 1000
-    # z12 is just produced by the antithetic reaction.
-    z12.omega = 0
-  end
-
-  rule
-    x.TF := z1.m
-    z2.TF := x.m
-    z1.extend := -gamma*z1.m*z2.m
-    z2.extend := -gamma*z1.m*z2.m
-    z12.extend := +gamma*z1.m*z2.m
-  end
-
   # Override equations.
   rule
     m_p_eq:  m_p := p_r.m + p_nr.m + z1.m + z2.m + z12.m + x.m
     J_sum_eq: J_sum := p_r.N*p_r.J + p_nr.N*p_nr.J + z1.N*z1.J + z2.N*z2.J + z12.N*z12.J + x.N*x.J
     J_sum_E_eq: J_sum_E := p_r.N*(1+1/p_r.E_m)*p_r.J + p_nr.N*(1+1/p_nr.E_m)*p_nr.J + z1.N*(1+1/z1.E_m)*z1.J + z2.N*(1+1/z2.E_m)*z2.J + z12.N*(1+1/z12.E_m)*z12.J + x.N*(1+1/x.E_m)*x.J
-  end
-
-  species
-    ref = 0
-  end
-
-  rule
-    ref := z1.omega / z2.omega_max *z2.h
   end
 
 end

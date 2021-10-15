@@ -42,7 +42,7 @@ classdef antithetic_controller
 			p.cell__m_aa = 1.826e-07;
 			p.cell__phi_t = 0.9473;
 			p.cell__z1__N = 1.0;
-			p.cell__z1__omega = 1000.0;
+			p.cell__z1__omega = 10.0;
 			p.cell__z1__d_m = 0.16;
 			p.cell__z1__k_b = 4.7627;
 			p.cell__z1__k_u = 119.7956;
@@ -54,7 +54,7 @@ classdef antithetic_controller
 			p.cell__z2__k_u = 119.7956;
 			p.cell__z2__l_p = 195.0;
 			p.cell__z2__l_e = 25.0;
-			p.cell__z2__omega_max = 1000.0;
+			p.cell__z2__omega_max = 100.0;
 			p.cell__z2__h = 100.0;
 			p.cell__z12__N = 1.0;
 			p.cell__z12__omega = 0.0;
@@ -85,8 +85,11 @@ classdef antithetic_controller
 				100.0 % cell__p_nr__m
 				0.01 % cell__mu (algebraic)
 				350.0 % cell__r (algebraic)
+				0.0 % cell__z1__extend
 				0.0 % cell__z1__m
+				0.0 % cell__z2__extend
 				0.0 % cell__z2__m
+				0.0 % cell__z12__extend
 				0.0 % cell__z12__m
 				0.0 % cell__x__extend
 				0.0 % cell__x__m
@@ -96,17 +99,20 @@ classdef antithetic_controller
 		function M = mass_matrix(~)
 			%% Mass matrix for DAE systems.
 			M = [
-				1 0 0 0 0 0 0 0 0 0 0 
-				0 1 0 0 0 0 0 0 0 0 0 
-				0 0 1 0 0 0 0 0 0 0 0 
-				0 0 0 1 0 0 0 0 0 0 0 
-				0 0 0 0 0 0 0 0 0 0 0 
-				0 0 0 0 0 0 0 0 0 0 0 
-				0 0 0 0 0 0 1 0 0 0 0 
-				0 0 0 0 0 0 0 1 0 0 0 
-				0 0 0 0 0 0 0 0 1 0 0 
-				0 0 0 0 0 0 0 0 0 1 0 
-				0 0 0 0 0 0 0 0 0 0 1 
+				1 0 0 0 0 0 0 0 0 0 0 0 0 0 
+				0 1 0 0 0 0 0 0 0 0 0 0 0 0 
+				0 0 1 0 0 0 0 0 0 0 0 0 0 0 
+				0 0 0 1 0 0 0 0 0 0 0 0 0 0 
+				0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+				0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+				0 0 0 0 0 0 1 0 0 0 0 0 0 0 
+				0 0 0 0 0 0 0 1 0 0 0 0 0 0 
+				0 0 0 0 0 0 0 0 1 0 0 0 0 0 
+				0 0 0 0 0 0 0 0 0 1 0 0 0 0 
+				0 0 0 0 0 0 0 0 0 0 1 0 0 0 
+				0 0 0 0 0 0 0 0 0 0 0 1 0 0 
+				0 0 0 0 0 0 0 0 0 0 0 0 1 0 
+				0 0 0 0 0 0 0 0 0 0 0 0 0 1 
 			];
 		end
 
@@ -134,23 +140,22 @@ classdef antithetic_controller
 			cell__p_nr__m = x(4,:);
 			cell__mu = x(5,:);
 			cell__r = x(6,:);
-			cell__z1__m = x(7,:);
-			cell__z2__m = x(8,:);
-			cell__z12__m = x(9,:);
-			cell__x__extend = x(10,:);
-			cell__x__m = x(11,:);
+			cell__z1__extend = x(7,:);
+			cell__z1__m = x(8,:);
+			cell__z2__extend = x(9,:);
+			cell__z2__m = x(10,:);
+			cell__z12__extend = x(11,:);
+			cell__z12__m = x(12,:);
+			cell__x__extend = x(13,:);
+			cell__x__m = x(14,:);
 
 			% Assigment states:
 			cell__s = p.s;
 			cell__m_h = p.m_h;
-			cell__p_r__nu = cell__self__cell__nu;
-			cell__p_r__mu = cell__self__cell__mu;
-			cell__p_r__r = cell__self__cell__r;
-			cell__p_r__m_h = cell__self__cell__m_h;
-			cell__p_r__J_host_sum = cell__self__cell__J_host_sum;
-			cell__p_r__K_C0 = p.cell__p_r__k_b./(p.cell__p_r__k_u + cell__p_r__nu./p.cell__p_r__l_e);
+			cell__p_r__mu = cell__mu;
+			cell__p_r__r = cell__r;
+			cell__p_r__m_h = cell__m_h;
 			cell__p_r__E_m = 3.459;
-			cell__p_r__J = cell__p_r__E_m.*p.cell__p_r__omega./(p.cell__p_r__d_m./cell__p_r__K_C0 + cell__p_r__mu.*cell__p_r__r);
 			cell__p_r__r_t = cell__p_r__m./p.cell__p_r__weigth;
 			cell__p_nr__mu = cell__mu;
 			cell__p_nr__r = cell__r;
@@ -162,7 +167,6 @@ classdef antithetic_controller
 			cell__z1__mu = cell__mu;
 			cell__z1__r = cell__r;
 			cell__z1__m_h = cell__m_h;
-			cell__z1__extend =  - p.cell__gamma.*cell__z1__m.*cell__z2__m;
 			cell__z1__K_C0 = p.cell__z1__k_b./(p.cell__z1__k_u + cell__z1__nu./p.cell__z1__l_e);
 			cell__z1__E_m = 0.62.*p.cell__z1__l_p./p.cell__z1__l_e;
 			cell__z1__J = cell__z1__E_m.*p.cell__z1__omega./(p.cell__z1__d_m./cell__z1__K_C0 + cell__z1__mu.*cell__z1__r);
@@ -170,7 +174,6 @@ classdef antithetic_controller
 			cell__z2__mu = cell__mu;
 			cell__z2__r = cell__r;
 			cell__z2__m_h = cell__m_h;
-			cell__z2__extend =  - p.cell__gamma.*cell__z1__m.*cell__z2__m;
 			cell__z2__K_C0 = p.cell__z2__k_b./(p.cell__z2__k_u + cell__z2__nu./p.cell__z2__l_e);
 			cell__z2__E_m = 0.62.*p.cell__z2__l_p./p.cell__z2__l_e;
 			cell__z2__TF = cell__x__m;
@@ -178,7 +181,6 @@ classdef antithetic_controller
 			cell__z12__mu = cell__mu;
 			cell__z12__r = cell__r;
 			cell__z12__m_h = cell__m_h;
-			cell__z12__extend = p.cell__gamma.*cell__z1__m.*cell__z2__m;
 			cell__z12__K_C0 = p.cell__z12__k_b./(p.cell__z12__k_u + cell__z12__nu./p.cell__z12__l_e);
 			cell__z12__E_m = 0.62.*p.cell__z12__l_p./p.cell__z12__l_e;
 			cell__z12__J = cell__z12__E_m.*p.cell__z12__omega./(p.cell__z12__d_m./cell__z12__K_C0 + cell__z12__mu.*cell__z12__r);
@@ -190,6 +192,9 @@ classdef antithetic_controller
 			cell__x__E_m = 0.62.*p.cell__x__l_p./p.cell__x__l_e;
 			cell__x__TF = cell__z1__m;
 			cell__ref = (p.cell__z1__omega./p.cell__z2__omega_max).*p.cell__z2__h;
+			cell__p_r__nu = cell__nu;
+			cell__p_r__K_C0 = p.cell__p_r__k_b./(p.cell__p_r__k_u + cell__p_r__nu./p.cell__p_r__l_e);
+			cell__p_r__J = cell__p_r__E_m.*p.cell__p_r__omega./(p.cell__p_r__d_m./cell__p_r__K_C0 + cell__p_r__mu.*cell__p_r__r);
 			cell__p_nr__nu = cell__nu;
 			cell__p_nr__K_C0 = p.cell__p_nr__k_b./(p.cell__p_nr__k_u + cell__p_nr__nu./p.cell__p_nr__l_e);
 			cell__p_nr__J = cell__p_nr__E_m.*p.cell__p_nr__omega./(p.cell__p_nr__d_m./cell__p_nr__K_C0 + cell__p_nr__mu.*cell__p_nr__r);
@@ -202,6 +207,7 @@ classdef antithetic_controller
 			cell__x__J_host_sum = cell__J_host_sum;
 			cell__x__omega = p.cell__x__omega_max.*cell__x__TF./p.cell__x__h;
 			cell__x__J = cell__x__E_m.*cell__x__omega./(p.cell__x__d_m./cell__x__K_C0 + cell__x__mu.*cell__x__r);
+			cell__p_r__J_host_sum = cell__J_host_sum;
 			cell__p_nr__J_host_sum = cell__J_host_sum;
 			cell__J_sum = p.cell__p_r__N.*cell__p_r__J + p.cell__p_nr__N.*cell__p_nr__J + p.cell__z1__N.*cell__z1__J + p.cell__z2__N.*cell__z2__J + p.cell__z12__N.*cell__z12__J + p.cell__x__N.*cell__x__J;
 			cell__J_sum_E = p.cell__p_r__N.*(1 + 1./cell__p_r__E_m).*cell__p_r__J + p.cell__p_nr__N.*(1 + 1./cell__p_nr__E_m).*cell__p_nr__J + p.cell__z1__N.*(1 + 1./cell__z1__E_m).*cell__z1__J + p.cell__z2__N.*(1 + 1./cell__z2__E_m).*cell__z2__J + p.cell__z12__N.*(1 + 1./cell__z12__E_m).*cell__z12__J + p.cell__x__N.*(1 + 1./cell__x__E_m).*cell__x__J;
@@ -211,13 +217,13 @@ classdef antithetic_controller
 			dx(1,1) = 0;
 
 			% der(cell__p_r__m)
-			dx(2,1) = (cell__p_r__m_h.*p.cell__p_r__N.*cell__p_r__J./cell__p_r__J_host_sum - cell__p_r__m).*cell__p_r__mu + cell__p_r__extend;
+			dx(2,1) =  + ((cell__p_r__m_h.*p.cell__p_r__N.*cell__p_r__J./cell__p_r__J_host_sum - cell__p_r__m).*cell__p_r__mu);
 
 			% der(cell__p_nr__extend)
 			dx(3,1) = 0;
 
 			% der(cell__p_nr__m)
-			dx(4,1) = (cell__p_nr__m_h.*p.cell__p_nr__N.*cell__p_nr__J./cell__p_nr__J_host_sum - cell__p_nr__m).*cell__p_nr__mu + cell__p_nr__extend;
+			dx(4,1) =  + ((cell__p_nr__m_h.*p.cell__p_nr__N.*cell__p_nr__J./cell__p_nr__J_host_sum - cell__p_nr__m).*cell__p_nr__mu);
 
 			% der(cell__mu)
 			dx(5,1) = cell__mu - (p.cell__m_aa./cell__m_h).*cell__nu.*cell__phi_b_t.*p.cell__phi_t.*cell__p_r__r_t;
@@ -225,20 +231,29 @@ classdef antithetic_controller
 			% der(cell__r)
 			dx(6,1) = cell__r - p.cell__phi_t.*cell__p_r__r_t./(1 + cell__J_sum_E);
 
+			% der(cell__z1__extend)
+			dx(7,1) = 0;
+
 			% der(cell__z1__m)
-			dx(7,1) = (cell__z1__m_h.*p.cell__z1__N.*cell__z1__J./cell__z1__J_host_sum - cell__z1__m).*cell__z1__mu + cell__z1__extend;
+			dx(8,1) =  + ((cell__z1__m_h.*p.cell__z1__N.*cell__z1__J./cell__z1__J_host_sum - cell__z1__m).*cell__z1__mu) - (p.cell__gamma.*cell__z1__m.*cell__z2__m);
+
+			% der(cell__z2__extend)
+			dx(9,1) = 0;
 
 			% der(cell__z2__m)
-			dx(8,1) = (cell__z2__m_h.*p.cell__z2__N.*cell__z2__J./cell__z2__J_host_sum - cell__z2__m).*cell__z2__mu + cell__z2__extend;
+			dx(10,1) =  + ((cell__z2__m_h.*p.cell__z2__N.*cell__z2__J./cell__z2__J_host_sum - cell__z2__m).*cell__z2__mu) - (p.cell__gamma.*cell__z1__m.*cell__z2__m);
+
+			% der(cell__z12__extend)
+			dx(11,1) = 0;
 
 			% der(cell__z12__m)
-			dx(9,1) = (cell__z12__m_h.*p.cell__z12__N.*cell__z12__J./cell__z12__J_host_sum - cell__z12__m).*cell__z12__mu + cell__z12__extend;
+			dx(12,1) =  + ((cell__z12__m_h.*p.cell__z12__N.*cell__z12__J./cell__z12__J_host_sum - cell__z12__m).*cell__z12__mu) + (p.cell__gamma.*cell__z1__m.*cell__z2__m);
 
 			% der(cell__x__extend)
-			dx(10,1) = 0;
+			dx(13,1) = 0;
 
 			% der(cell__x__m)
-			dx(11,1) = (cell__x__m_h.*p.cell__x__N.*cell__x__J./cell__x__J_host_sum - cell__x__m).*cell__x__mu + cell__x__extend;
+			dx(14,1) =  + ((cell__x__m_h.*p.cell__x__N.*cell__x__J./cell__x__J_host_sum - cell__x__m).*cell__x__mu);
 
 		end
 		function out = simout2struct(~,t,x,p)
@@ -253,23 +268,22 @@ classdef antithetic_controller
 			cell__p_nr__m = x(4,:);
 			cell__mu = x(5,:);
 			cell__r = x(6,:);
-			cell__z1__m = x(7,:);
-			cell__z2__m = x(8,:);
-			cell__z12__m = x(9,:);
-			cell__x__extend = x(10,:);
-			cell__x__m = x(11,:);
+			cell__z1__extend = x(7,:);
+			cell__z1__m = x(8,:);
+			cell__z2__extend = x(9,:);
+			cell__z2__m = x(10,:);
+			cell__z12__extend = x(11,:);
+			cell__z12__m = x(12,:);
+			cell__x__extend = x(13,:);
+			cell__x__m = x(14,:);
 
 			% Assigment states:
 			cell__s = p.s;
 			cell__m_h = p.m_h;
-			cell__p_r__nu = cell__self__cell__nu;
-			cell__p_r__mu = cell__self__cell__mu;
-			cell__p_r__r = cell__self__cell__r;
-			cell__p_r__m_h = cell__self__cell__m_h;
-			cell__p_r__J_host_sum = cell__self__cell__J_host_sum;
-			cell__p_r__K_C0 = p.cell__p_r__k_b./(p.cell__p_r__k_u + cell__p_r__nu./p.cell__p_r__l_e);
+			cell__p_r__mu = cell__mu;
+			cell__p_r__r = cell__r;
+			cell__p_r__m_h = cell__m_h;
 			cell__p_r__E_m = 3.459;
-			cell__p_r__J = cell__p_r__E_m.*p.cell__p_r__omega./(p.cell__p_r__d_m./cell__p_r__K_C0 + cell__p_r__mu.*cell__p_r__r);
 			cell__p_r__r_t = cell__p_r__m./p.cell__p_r__weigth;
 			cell__p_nr__mu = cell__mu;
 			cell__p_nr__r = cell__r;
@@ -281,7 +295,6 @@ classdef antithetic_controller
 			cell__z1__mu = cell__mu;
 			cell__z1__r = cell__r;
 			cell__z1__m_h = cell__m_h;
-			cell__z1__extend =  - p.cell__gamma.*cell__z1__m.*cell__z2__m;
 			cell__z1__K_C0 = p.cell__z1__k_b./(p.cell__z1__k_u + cell__z1__nu./p.cell__z1__l_e);
 			cell__z1__E_m = 0.62.*p.cell__z1__l_p./p.cell__z1__l_e;
 			cell__z1__J = cell__z1__E_m.*p.cell__z1__omega./(p.cell__z1__d_m./cell__z1__K_C0 + cell__z1__mu.*cell__z1__r);
@@ -289,7 +302,6 @@ classdef antithetic_controller
 			cell__z2__mu = cell__mu;
 			cell__z2__r = cell__r;
 			cell__z2__m_h = cell__m_h;
-			cell__z2__extend =  - p.cell__gamma.*cell__z1__m.*cell__z2__m;
 			cell__z2__K_C0 = p.cell__z2__k_b./(p.cell__z2__k_u + cell__z2__nu./p.cell__z2__l_e);
 			cell__z2__E_m = 0.62.*p.cell__z2__l_p./p.cell__z2__l_e;
 			cell__z2__TF = cell__x__m;
@@ -297,7 +309,6 @@ classdef antithetic_controller
 			cell__z12__mu = cell__mu;
 			cell__z12__r = cell__r;
 			cell__z12__m_h = cell__m_h;
-			cell__z12__extend = p.cell__gamma.*cell__z1__m.*cell__z2__m;
 			cell__z12__K_C0 = p.cell__z12__k_b./(p.cell__z12__k_u + cell__z12__nu./p.cell__z12__l_e);
 			cell__z12__E_m = 0.62.*p.cell__z12__l_p./p.cell__z12__l_e;
 			cell__z12__J = cell__z12__E_m.*p.cell__z12__omega./(p.cell__z12__d_m./cell__z12__K_C0 + cell__z12__mu.*cell__z12__r);
@@ -309,6 +320,9 @@ classdef antithetic_controller
 			cell__x__E_m = 0.62.*p.cell__x__l_p./p.cell__x__l_e;
 			cell__x__TF = cell__z1__m;
 			cell__ref = (p.cell__z1__omega./p.cell__z2__omega_max).*p.cell__z2__h;
+			cell__p_r__nu = cell__nu;
+			cell__p_r__K_C0 = p.cell__p_r__k_b./(p.cell__p_r__k_u + cell__p_r__nu./p.cell__p_r__l_e);
+			cell__p_r__J = cell__p_r__E_m.*p.cell__p_r__omega./(p.cell__p_r__d_m./cell__p_r__K_C0 + cell__p_r__mu.*cell__p_r__r);
 			cell__p_nr__nu = cell__nu;
 			cell__p_nr__K_C0 = p.cell__p_nr__k_b./(p.cell__p_nr__k_u + cell__p_nr__nu./p.cell__p_nr__l_e);
 			cell__p_nr__J = cell__p_nr__E_m.*p.cell__p_nr__omega./(p.cell__p_nr__d_m./cell__p_nr__K_C0 + cell__p_nr__mu.*cell__p_nr__r);
@@ -321,6 +335,7 @@ classdef antithetic_controller
 			cell__x__J_host_sum = cell__J_host_sum;
 			cell__x__omega = p.cell__x__omega_max.*cell__x__TF./p.cell__x__h;
 			cell__x__J = cell__x__E_m.*cell__x__omega./(p.cell__x__d_m./cell__x__K_C0 + cell__x__mu.*cell__x__r);
+			cell__p_r__J_host_sum = cell__J_host_sum;
 			cell__p_nr__J_host_sum = cell__J_host_sum;
 			cell__J_sum = p.cell__p_r__N.*cell__p_r__J + p.cell__p_nr__N.*cell__p_nr__J + p.cell__z1__N.*cell__z1__J + p.cell__z2__N.*cell__z2__J + p.cell__z12__N.*cell__z12__J + p.cell__x__N.*cell__x__J;
 			cell__J_sum_E = p.cell__p_r__N.*(1 + 1./cell__p_r__E_m).*cell__p_r__J + p.cell__p_nr__N.*(1 + 1./cell__p_nr__E_m).*cell__p_nr__J + p.cell__z1__N.*(1 + 1./cell__z1__E_m).*cell__z1__J + p.cell__z2__N.*(1 + 1./cell__z2__E_m).*cell__z2__J + p.cell__z12__N.*(1 + 1./cell__z12__E_m).*cell__z12__J + p.cell__x__N.*(1 + 1./cell__x__E_m).*cell__x__J;

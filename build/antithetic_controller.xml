@@ -111,7 +111,7 @@
       <parameter id="cell__m_aa" value="1.826e-07" units="per_second" constant="true"/>
       <parameter id="cell__phi_t" value="0.9473" units="per_second" constant="true"/>
       <parameter id="cell__z1__N" value="1" units="per_second" constant="true"/>
-      <parameter id="cell__z1__omega" value="1000" units="per_second" constant="true"/>
+      <parameter id="cell__z1__omega" value="10" units="per_second" constant="true"/>
       <parameter id="cell__z1__d_m" value="0.16" units="per_second" constant="true"/>
       <parameter id="cell__z1__k_b" value="4.7627" units="per_second" constant="true"/>
       <parameter id="cell__z1__k_u" value="119.7956" units="per_second" constant="true"/>
@@ -123,7 +123,7 @@
       <parameter id="cell__z2__k_u" value="119.7956" units="per_second" constant="true"/>
       <parameter id="cell__z2__l_p" value="195" units="per_second" constant="true"/>
       <parameter id="cell__z2__l_e" value="25" units="per_second" constant="true"/>
-      <parameter id="cell__z2__omega_max" value="1000" units="per_second" constant="true"/>
+      <parameter id="cell__z2__omega_max" value="100" units="per_second" constant="true"/>
       <parameter id="cell__z2__h" value="100" units="per_second" constant="true"/>
       <parameter id="cell__z12__N" value="1" units="per_second" constant="true"/>
       <parameter id="cell__z12__omega" value="0" units="per_second" constant="true"/>
@@ -192,32 +192,6 @@
           </apply>
         </math>
       </assignmentRule>
-      <rateRule id="cell__p_r__m_eq" variable="cell__p_r__m">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <plus/>
-            <apply>
-              <times/>
-              <apply>
-                <minus/>
-                <apply>
-                  <divide/>
-                  <apply>
-                    <times/>
-                    <ci> cell__p_r__m_h </ci>
-                    <ci> cell__p_r__N </ci>
-                    <ci> cell__p_r__J </ci>
-                  </apply>
-                  <ci> cell__p_r__J_host_sum </ci>
-                </apply>
-                <ci> cell__p_r__m </ci>
-              </apply>
-              <ci> cell__p_r__mu </ci>
-            </apply>
-            <ci> cell__p_r__extend </ci>
-          </apply>
-        </math>
-      </rateRule>
       <assignmentRule id="cell__p_r___R1" variable="cell__p_r__r_t">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
@@ -227,32 +201,32 @@
           </apply>
         </math>
       </assignmentRule>
-      <assignmentRule id="cell__R1" variable="cell__p_r__nu">
+      <assignmentRule id="cell___R2" variable="cell__p_r__nu">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__self__cell__nu </ci>
+          <ci> cell__nu </ci>
         </math>
       </assignmentRule>
-      <assignmentRule id="cell__R2" variable="cell__p_r__mu">
+      <assignmentRule id="cell___R3" variable="cell__p_r__mu">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__self__cell__mu </ci>
+          <ci> cell__mu </ci>
         </math>
       </assignmentRule>
-      <assignmentRule id="cell__R3" variable="cell__p_r__r">
+      <assignmentRule id="cell___R4" variable="cell__p_r__r">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__self__cell__r </ci>
+          <ci> cell__r </ci>
         </math>
       </assignmentRule>
-      <assignmentRule id="cell__R4" variable="cell__p_r__m_h">
+      <assignmentRule id="cell___R5" variable="cell__p_r__m_h">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__self__cell__m_h </ci>
+          <ci> cell__m_h </ci>
         </math>
       </assignmentRule>
-      <assignmentRule id="cell__R5" variable="cell__p_r__J_host_sum">
+      <assignmentRule id="cell___R6" variable="cell__p_r__J_host_sum">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__self__cell__J_host_sum </ci>
+          <ci> cell__J_host_sum </ci>
         </math>
       </assignmentRule>
-      <assignmentRule id="cell__p_nr___R2" variable="cell__p_nr__K_C0">
+      <assignmentRule id="cell__p_nr___R7" variable="cell__p_nr__K_C0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
@@ -299,53 +273,27 @@
           </apply>
         </math>
       </assignmentRule>
-      <rateRule id="cell__p_nr__m_eq" variable="cell__p_nr__m">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <plus/>
-            <apply>
-              <times/>
-              <apply>
-                <minus/>
-                <apply>
-                  <divide/>
-                  <apply>
-                    <times/>
-                    <ci> cell__p_nr__m_h </ci>
-                    <ci> cell__p_nr__N </ci>
-                    <ci> cell__p_nr__J </ci>
-                  </apply>
-                  <ci> cell__p_nr__J_host_sum </ci>
-                </apply>
-                <ci> cell__p_nr__m </ci>
-              </apply>
-              <ci> cell__p_nr__mu </ci>
-            </apply>
-            <ci> cell__p_nr__extend </ci>
-          </apply>
-        </math>
-      </rateRule>
-      <assignmentRule id="cell___R3" variable="cell__p_nr__nu">
+      <assignmentRule id="cell___R8" variable="cell__p_nr__nu">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <ci> cell__nu </ci>
         </math>
       </assignmentRule>
-      <assignmentRule id="cell___R4" variable="cell__p_nr__mu">
+      <assignmentRule id="cell___R9" variable="cell__p_nr__mu">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <ci> cell__mu </ci>
         </math>
       </assignmentRule>
-      <assignmentRule id="cell___R5" variable="cell__p_nr__r">
+      <assignmentRule id="cell___R10" variable="cell__p_nr__r">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <ci> cell__r </ci>
         </math>
       </assignmentRule>
-      <assignmentRule id="cell___R6" variable="cell__p_nr__m_h">
+      <assignmentRule id="cell___R11" variable="cell__p_nr__m_h">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <ci> cell__m_h </ci>
         </math>
       </assignmentRule>
-      <assignmentRule id="cell___R7" variable="cell__p_nr__J_host_sum">
+      <assignmentRule id="cell___R12" variable="cell__p_nr__J_host_sum">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <ci> cell__J_host_sum </ci>
         </math>
@@ -367,7 +315,7 @@
           </apply>
         </math>
       </assignmentRule>
-      <algebraicRule id="cell___R8">
+      <algebraicRule id="cell___R13">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <minus/>
@@ -437,7 +385,7 @@
           </apply>
         </math>
       </assignmentRule>
-      <assignmentRule id="cell___R9" variable="cell__J_host_sum">
+      <assignmentRule id="cell___R14" variable="cell__J_host_sum">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <plus/>
@@ -545,7 +493,7 @@
           </apply>
         </math>
       </assignmentRule>
-      <assignmentRule id="cell___R10" variable="cell__phi_b_t">
+      <assignmentRule id="cell___R15" variable="cell__phi_b_t">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
@@ -558,7 +506,7 @@
           </apply>
         </math>
       </assignmentRule>
-      <algebraicRule id="cell___R11">
+      <algebraicRule id="cell___R16">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <minus/>
@@ -579,7 +527,7 @@
           </apply>
         </math>
       </algebraicRule>
-      <assignmentRule id="cell__z1___R12" variable="cell__z1__K_C0">
+      <assignmentRule id="cell__z1___R17" variable="cell__z1__K_C0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
@@ -634,33 +582,7 @@
           </apply>
         </math>
       </assignmentRule>
-      <rateRule id="cell__z1__m_eq" variable="cell__z1__m">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <plus/>
-            <apply>
-              <times/>
-              <apply>
-                <minus/>
-                <apply>
-                  <divide/>
-                  <apply>
-                    <times/>
-                    <ci> cell__z1__m_h </ci>
-                    <ci> cell__z1__N </ci>
-                    <ci> cell__z1__J </ci>
-                  </apply>
-                  <ci> cell__z1__J_host_sum </ci>
-                </apply>
-                <ci> cell__z1__m </ci>
-              </apply>
-              <ci> cell__z1__mu </ci>
-            </apply>
-            <ci> cell__z1__extend </ci>
-          </apply>
-        </math>
-      </rateRule>
-      <assignmentRule id="cell__z2___R13" variable="cell__z2__K_C0">
+      <assignmentRule id="cell__z2___R18" variable="cell__z2__K_C0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
@@ -715,33 +637,7 @@
           </apply>
         </math>
       </assignmentRule>
-      <rateRule id="cell__z2__m_eq" variable="cell__z2__m">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <plus/>
-            <apply>
-              <times/>
-              <apply>
-                <minus/>
-                <apply>
-                  <divide/>
-                  <apply>
-                    <times/>
-                    <ci> cell__z2__m_h </ci>
-                    <ci> cell__z2__N </ci>
-                    <ci> cell__z2__J </ci>
-                  </apply>
-                  <ci> cell__z2__J_host_sum </ci>
-                </apply>
-                <ci> cell__z2__m </ci>
-              </apply>
-              <ci> cell__z2__mu </ci>
-            </apply>
-            <ci> cell__z2__extend </ci>
-          </apply>
-        </math>
-      </rateRule>
-      <assignmentRule id="cell__z2___R14" variable="cell__z2__omega">
+      <assignmentRule id="cell__z2___R19" variable="cell__z2__omega">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
@@ -754,7 +650,7 @@
           </apply>
         </math>
       </assignmentRule>
-      <assignmentRule id="cell__z12___R15" variable="cell__z12__K_C0">
+      <assignmentRule id="cell__z12___R20" variable="cell__z12__K_C0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
@@ -809,33 +705,7 @@
           </apply>
         </math>
       </assignmentRule>
-      <rateRule id="cell__z12__m_eq" variable="cell__z12__m">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <plus/>
-            <apply>
-              <times/>
-              <apply>
-                <minus/>
-                <apply>
-                  <divide/>
-                  <apply>
-                    <times/>
-                    <ci> cell__z12__m_h </ci>
-                    <ci> cell__z12__N </ci>
-                    <ci> cell__z12__J </ci>
-                  </apply>
-                  <ci> cell__z12__J_host_sum </ci>
-                </apply>
-                <ci> cell__z12__m </ci>
-              </apply>
-              <ci> cell__z12__mu </ci>
-            </apply>
-            <ci> cell__z12__extend </ci>
-          </apply>
-        </math>
-      </rateRule>
-      <assignmentRule id="cell__x___R16" variable="cell__x__K_C0">
+      <assignmentRule id="cell__x___R21" variable="cell__x__K_C0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
@@ -890,10 +760,342 @@
           </apply>
         </math>
       </assignmentRule>
-      <rateRule id="cell__x__m_eq" variable="cell__x__m">
+      <assignmentRule id="cell__x___R22" variable="cell__x__omega">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <plus/>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> cell__x__omega_max </ci>
+              <ci> cell__x__TF </ci>
+            </apply>
+            <ci> cell__x__h </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R23" variable="cell__x__TF">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__z1__m </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R24" variable="cell__z2__TF">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__x__m </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R25" variable="cell__ref">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> cell__z1__omega </ci>
+              <ci> cell__z2__omega_max </ci>
+            </apply>
+            <ci> cell__z2__h </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R26" variable="cell__z1__nu">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__nu </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R27" variable="cell__z1__mu">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__mu </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R28" variable="cell__z1__r">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__r </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R29" variable="cell__z1__m_h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__m_h </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R30" variable="cell__z1__J_host_sum">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__J_host_sum </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R31" variable="cell__z2__nu">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__nu </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R32" variable="cell__z2__mu">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__mu </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R33" variable="cell__z2__r">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__r </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R34" variable="cell__z2__m_h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__m_h </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R35" variable="cell__z2__J_host_sum">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__J_host_sum </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R36" variable="cell__z12__nu">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__nu </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R37" variable="cell__z12__mu">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__mu </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R38" variable="cell__z12__r">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__r </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R39" variable="cell__z12__m_h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__m_h </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R40" variable="cell__z12__J_host_sum">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__J_host_sum </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R41" variable="cell__x__nu">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__nu </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R42" variable="cell__x__mu">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__mu </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R43" variable="cell__x__r">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__r </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R44" variable="cell__x__m_h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__m_h </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R45" variable="cell__x__J_host_sum">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__J_host_sum </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="cell___R46" variable="cell__x__TF">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> cell__z1__m </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="_R47" variable="cell__s">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> s </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule id="_R48" variable="cell__m_h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> m_h </ci>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+    <listOfReactions>
+      <reaction id="cell__p_r___J0" reversible="false">
+        <listOfProducts>
+          <speciesReference species="cell__p_r__m" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cell__p_r__m_h"/>
+          <modifierSpeciesReference species="cell__p_r__J"/>
+          <modifierSpeciesReference species="cell__p_r__J_host_sum"/>
+          <modifierSpeciesReference species="cell__p_r__m"/>
+          <modifierSpeciesReference species="cell__p_r__mu"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> cell__p_r__m_h </ci>
+                    <ci> cell__p_r__N </ci>
+                    <ci> cell__p_r__J </ci>
+                  </apply>
+                  <ci> cell__p_r__J_host_sum </ci>
+                </apply>
+                <ci> cell__p_r__m </ci>
+              </apply>
+              <ci> cell__p_r__mu </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="cell__p_nr___J1" reversible="false">
+        <listOfProducts>
+          <speciesReference species="cell__p_nr__m" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cell__p_nr__m_h"/>
+          <modifierSpeciesReference species="cell__p_nr__J"/>
+          <modifierSpeciesReference species="cell__p_nr__J_host_sum"/>
+          <modifierSpeciesReference species="cell__p_nr__m"/>
+          <modifierSpeciesReference species="cell__p_nr__mu"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> cell__p_nr__m_h </ci>
+                    <ci> cell__p_nr__N </ci>
+                    <ci> cell__p_nr__J </ci>
+                  </apply>
+                  <ci> cell__p_nr__J_host_sum </ci>
+                </apply>
+                <ci> cell__p_nr__m </ci>
+              </apply>
+              <ci> cell__p_nr__mu </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="cell__z1___J2" reversible="false">
+        <listOfProducts>
+          <speciesReference species="cell__z1__m" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cell__z1__m_h"/>
+          <modifierSpeciesReference species="cell__z1__J"/>
+          <modifierSpeciesReference species="cell__z1__J_host_sum"/>
+          <modifierSpeciesReference species="cell__z1__m"/>
+          <modifierSpeciesReference species="cell__z1__mu"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> cell__z1__m_h </ci>
+                    <ci> cell__z1__N </ci>
+                    <ci> cell__z1__J </ci>
+                  </apply>
+                  <ci> cell__z1__J_host_sum </ci>
+                </apply>
+                <ci> cell__z1__m </ci>
+              </apply>
+              <ci> cell__z1__mu </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="cell__z2___J3" reversible="false">
+        <listOfProducts>
+          <speciesReference species="cell__z2__m" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cell__z2__m_h"/>
+          <modifierSpeciesReference species="cell__z2__J"/>
+          <modifierSpeciesReference species="cell__z2__J_host_sum"/>
+          <modifierSpeciesReference species="cell__z2__m"/>
+          <modifierSpeciesReference species="cell__z2__mu"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> cell__z2__m_h </ci>
+                    <ci> cell__z2__N </ci>
+                    <ci> cell__z2__J </ci>
+                  </apply>
+                  <ci> cell__z2__J_host_sum </ci>
+                </apply>
+                <ci> cell__z2__m </ci>
+              </apply>
+              <ci> cell__z2__mu </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="cell__z12___J4" reversible="false">
+        <listOfProducts>
+          <speciesReference species="cell__z12__m" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cell__z12__m_h"/>
+          <modifierSpeciesReference species="cell__z12__J"/>
+          <modifierSpeciesReference species="cell__z12__J_host_sum"/>
+          <modifierSpeciesReference species="cell__z12__m"/>
+          <modifierSpeciesReference species="cell__z12__mu"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> cell__z12__m_h </ci>
+                    <ci> cell__z12__N </ci>
+                    <ci> cell__z12__J </ci>
+                  </apply>
+                  <ci> cell__z12__J_host_sum </ci>
+                </apply>
+                <ci> cell__z12__m </ci>
+              </apply>
+              <ci> cell__z12__mu </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="cell__x___J5" reversible="false">
+        <listOfProducts>
+          <speciesReference species="cell__x__m" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cell__x__m_h"/>
+          <modifierSpeciesReference species="cell__x__J"/>
+          <modifierSpeciesReference species="cell__x__J_host_sum"/>
+          <modifierSpeciesReference species="cell__x__m"/>
+          <modifierSpeciesReference species="cell__x__mu"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <apply>
@@ -912,197 +1114,32 @@
               </apply>
               <ci> cell__x__mu </ci>
             </apply>
-            <ci> cell__x__extend </ci>
-          </apply>
-        </math>
-      </rateRule>
-      <assignmentRule id="cell__x___R17" variable="cell__x__omega">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <divide/>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="cell___J6" reversible="false">
+        <listOfReactants>
+          <speciesReference species="cell__z1__m" constant="true"/>
+          <speciesReference species="cell__z2__m" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="cell__z12__m" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cell__z1__m"/>
+          <modifierSpeciesReference species="cell__z2__m"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
-              <ci> cell__x__omega_max </ci>
-              <ci> cell__x__TF </ci>
-            </apply>
-            <ci> cell__x__h </ci>
-          </apply>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R18" variable="cell__z1__nu">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__nu </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R19" variable="cell__z1__mu">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__mu </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R20" variable="cell__z1__r">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__r </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R21" variable="cell__z1__m_h">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__m_h </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R22" variable="cell__z1__J_host_sum">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__J_host_sum </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R23" variable="cell__z2__nu">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__nu </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R24" variable="cell__z2__mu">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__mu </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R25" variable="cell__z2__r">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__r </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R26" variable="cell__z2__m_h">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__m_h </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R27" variable="cell__z2__J_host_sum">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__J_host_sum </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R28" variable="cell__z12__nu">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__nu </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R29" variable="cell__z12__mu">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__mu </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R30" variable="cell__z12__r">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__r </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R31" variable="cell__z12__m_h">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__m_h </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R32" variable="cell__z12__J_host_sum">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__J_host_sum </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R33" variable="cell__x__nu">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__nu </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R34" variable="cell__x__mu">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__mu </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R35" variable="cell__x__r">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__r </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R36" variable="cell__x__m_h">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__m_h </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R37" variable="cell__x__J_host_sum">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__J_host_sum </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R38" variable="cell__x__TF">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__z1__m </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R39" variable="cell__x__TF">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__z1__m </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R40" variable="cell__z2__TF">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> cell__x__m </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R41" variable="cell__z1__extend">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <times/>
-            <apply>
-              <minus/>
               <ci> cell__gamma </ci>
+              <ci> cell__z1__m </ci>
+              <ci> cell__z2__m </ci>
             </apply>
-            <ci> cell__z1__m </ci>
-            <ci> cell__z2__m </ci>
-          </apply>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R42" variable="cell__z2__extend">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <times/>
-            <apply>
-              <minus/>
-              <ci> cell__gamma </ci>
-            </apply>
-            <ci> cell__z1__m </ci>
-            <ci> cell__z2__m </ci>
-          </apply>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R43" variable="cell__z12__extend">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <times/>
-            <ci> cell__gamma </ci>
-            <ci> cell__z1__m </ci>
-            <ci> cell__z2__m </ci>
-          </apply>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="cell___R44" variable="cell__ref">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <times/>
-            <apply>
-              <divide/>
-              <ci> cell__z1__omega </ci>
-              <ci> cell__z2__omega_max </ci>
-            </apply>
-            <ci> cell__z2__h </ci>
-          </apply>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="_R45" variable="cell__s">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> s </ci>
-        </math>
-      </assignmentRule>
-      <assignmentRule id="_R46" variable="cell__m_h">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> m_h </ci>
-        </math>
-      </assignmentRule>
-    </listOfRules>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
   </model>
 </sbml>

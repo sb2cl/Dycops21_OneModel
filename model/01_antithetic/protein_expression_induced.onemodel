@@ -19,7 +19,6 @@ model ProteinExpressionInduced(ProteinExpression)
   end
 
   rule
-    #omega := omega_max*TF/(TF+h)
     omega := omega_max*TF/h
   end
 

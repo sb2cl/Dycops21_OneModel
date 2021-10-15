@@ -17,7 +17,7 @@ import './bioreactor/fedbatch.onemodel'
 ### META-MODEL OPTIONS ###
 
 # Cell model: 'wild_type', 'one_protein', 'antithetic'.
-cell_model = 'one_protein'
+cell_model = 'antithetic'
 
 # Mass equation: 'interpolated', 'jesus', 'fix'.
 mass_equation = 'interpolated'
@@ -26,7 +26,7 @@ mass_equation = 'interpolated'
 bioreactor = 'nu_fix'
 
 # Simulation time.
-parameter __t_end = 10000
+parameter __t_end = 2000
 
 
 ### CELL BURDEN MODEL ###
@@ -78,9 +78,13 @@ if strcmp(bioreactor, 'nu_fix')
 end
 
 if strcmp(bioreactor, 'substrate_fix')
+  parameter
+    s = 3.6
+  end
+
   rule
     # Fix the substrate to a fix value (gram/litre).
-    cell.s := 3.6
+    cell.s := s
   end
 end
 

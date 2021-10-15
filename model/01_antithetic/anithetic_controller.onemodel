@@ -3,7 +3,7 @@ import './protein_expression_induced.onemodel'
 
 z1  = ProteinExpression()
 z2  = ProteinExpressionInduced()
-z12 = ProteinExpressionInduced()
+z12 = ProteinExpression()
 x   = ProteinExpressionInduced()
 
 species
