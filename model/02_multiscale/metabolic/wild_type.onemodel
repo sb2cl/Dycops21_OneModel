@@ -52,7 +52,7 @@ model WildType
 
   parameter
     # Half-activation threshold of growth rate (grams/litre).
-    K_s = 0.1802
+    K_sc = 0.1802
     # Maximum effective translation rate per ribosome (aa/minute).
     nu = 1260
     # Average aminoacid mass (fg/aa).
@@ -81,7 +81,7 @@ model WildType
   end
 
   rule
-    nu_eq: nu_t := nu*s/(s + K_s) 
+    nu_eq: nu_t := nu*s/(s + K_sc) 
     mu == m_aa/m_h*nu_t*phi_b_t*phi_t*p_r.r_t
     m_p_eq:  m_p := p_r.m + p_nr.m
     J_sum_eq: J_sum := p_r.N*p_r.J + p_nr.N*p_nr.J
