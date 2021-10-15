@@ -51,11 +51,16 @@ model BaseProtein
   end
 
   rule
-            K_C0 := k_b/(k_u + nu/l_e)
+    # K_C0 equation.
+    K_C0 := k_b/(k_u + nu_t/l_e)
+
     # Aproximation of E_m. 
-    #E_m_eq: E_m  := 0.62*l_p/l_e
+    # E_m_eq: E_m  := 0.62*l_p/l_e
+
     # No-aproximation of E_m.
     E_m_eq: E_m  := (l_p/l_e)*(1-(l_p/(l_p+l_e)^(l_p/l_e)))
+    
+    # Resource recruitment strength equation.
     J_eq:   J    := E_m*omega/(d_m/K_C0 + mu*r)  
   end
 

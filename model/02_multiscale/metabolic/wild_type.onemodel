@@ -1,23 +1,6 @@
 import '../protein/ribosomal_protein.onemodel'
 import '../protein/non_ribosomal_protein.onemodel'
 
-#function add_protein(self, p)
-#  
-#  print(p)
-#
-#  rule
-#    self.R1: p.nu := self.nu
-#    self.R2: p.mu := self.mu
-#    self.R3: p.r := self.r
-#    self.R4: p.m_h := self.m_h
-#    self.R5: p.J_host_sum := self.J_host_sum
-#  end
-#
-#  print(p)
-#
-#  showContext()
-#end
-
 model WildType
   # Model of a wild-type E.coli. cell.
 
@@ -29,26 +12,7 @@ model WildType
   end
 
   p_r = RibosomalProtein()
-
-  #add_protein(self, p_r)
-
-  rule
-    p_r.nu_t := nu_t
-    p_r.mu := mu
-    p_r.r := r
-    p_r.m_h := m_h
-    p_r.J_host_sum := J_host_sum
-  end
-
   p_nr = NonRibosomalProtein()
-
-  rule
-    p_nr.nu_t := nu_t
-    p_nr.mu := mu
-    p_nr.r := r
-    p_nr.m_h := m_h
-    p_nr.J_host_sum := J_host_sum
-  end
 
   parameter
     # Half-activation threshold of growth rate (grams/litre).
@@ -80,6 +44,25 @@ model WildType
     r = 350
   end
 
+  # Connect p_r to this model.
+  rule
+    p_r.nu_t := nu_t
+    p_r.mu := mu
+    p_r.r := r
+    p_r.m_h := m_h
+    p_r.J_host_sum := J_host_sum
+  end
+
+  # Connect p_nr to this model.
+  rule
+    p_nr.nu_t := nu_t
+    p_nr.mu := mu
+    p_nr.r := r
+    p_nr.m_h := m_h
+    p_nr.J_host_sum := J_host_sum
+  end
+
+  # Model equations.
   rule
     nu_eq: nu_t := nu*s/(s + K_sc) 
     mu == m_aa/m_h*nu_t*phi_b_t*phi_t*p_r.r_t
