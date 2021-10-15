@@ -14,48 +14,36 @@ opt = odeset('AbsTol',1e-8,'RelTol',1e-8);
 opt = odeset(opt,'Mass',m.M);
 
 % Base parameters.
-p = m.p;
-p.cell__nu = 1200;
-p.cell__z1__omega = 1;
-p.cell__z2__omega_max = 1;
-p.cell__x__omega_max = 1;
-p.cell__x__h = 0.001;
+m = m.p
 
 % Parameters for steady state first simulation.
-p_0 = p;
-p_0.tspan = [0 100000];
+t_steady = 100000;
+p_0.tspan = [0 t_steady];
+p_0 = m.p;
 p_0.cell__z1__omega = 0;
-p_0.cell__z2__omega_max = 0;
-p_0.cell__x__omega_max = 0;
+p_0.cell__z2__omega = 0;
+p_0.cell__z12__omega = 0;
 
 % Parameters first step of the simulation.
-p_1 = p;
 p_1.tspan = [0 1000];
-p_1.cell__z1__omega = 0;
-p_1.cell__z2__omega = 0;
-
-% Parameters second step of the simulation.
-p_2 = p;
-p_2.tspan = [p_1.tspan(2) p_1.tspan(2)+5000];
-
-%% Simulate
+p_0 = m.p;
+p_0.cell__z1__omega = 0;
+p_0.cell__z2__omega = 0;
+p_0.cell__z12__omega = 0;
 
 % Previous simulation.
-[t,x] = ode15s(@(t,x) m.ode(t,x,p_0),p_0.tspan,m.x0,opt);
+[t,x] = ode15s(@(t,x) m.ode(t,x,p_0),[0 t_steady],m.x0,opt);
 out_0 = m.simout2struct(t,x,p_0);
 
 % First simulation step.
-[t,x] = ode15s(@(t,x) m.ode(t,x,p_1),p_1.tspan,x(end,:),opt);
-out_1 = m.simout2struct(t,x,p_1);
+[t,x] = ode15s(@(t,x) m.ode(t,x,p),p1.tspan,x(end,:),opt);
+out_1 = m.simout2struct(t,x,p);
 
 % Second simulation step.
-[t,x] = ode15s(@(t,x) m.ode(t,x,p_2),p_2.tspan,x(end,:),opt);
-out_2 = m.simout2struct(t,x,p_2);
+[t,x] = ode15s(@(t,x) m.ode(t,x,m.p),[1000 m.opts.t_end+1000],x(end,:),opt);
+out_2 = m.simout2struct(t,x,m.p);
 
 out = concatStruct(out_1, out_2);
-
-
-%% Plot
 
 % Plot result.
 figure(1);
@@ -111,28 +99,25 @@ figure(2);
 controller = out.cell__z1__m + out.cell__z2__m + out.cell__z12__m; 
 
 mass = [
-    out.cell__x__m controller out.cell__p_r__m out.cell__p_nr__m 
+    out.cell__p_r__m out.cell__p_nr__m out.cell__x__m controller
     ];
 
 subplot(3,1,1);
 
 area(out.t, mass);
 ylim([0 +inf])
-legend('x','controller','ribo','ron-ribo');
+legend('ribo','ron-ribo','x','controller');
 
 subplot(3,1,2);
 
 area(out.t, mass./sum(mass')');
 ylim([0 +inf])
-legend('x','controller','ribo','ron-ribo');
+legend('ribo','ron-ribo','x','controller');
 
 subplot(3,1,3);
 
-hold on;
-plot(out.t, (controller + out.cell__x__m)./sum(mass')'*100);
-plot(out.t, 100-out.cell__mu./out.cell__mu(1)*100);
-ylim([0 100]);
-legend('heterologous', 'growth');
+plot(out.t, 100*(controller + out.cell__x__m)./sum(mass')');
+ylim([0 +inf])
 
 
 
