@@ -46,6 +46,8 @@ model BaseProtein
     E_m = 0
     # Resources recruitment strength (dimensionless).
     J = 0
+    # Resource recruitment strength taking into account N and E_m (dimensionless).
+    W = 0
     # Total mass of this protein in the cell (fg/cell).
     m = 0
   end
@@ -54,14 +56,16 @@ model BaseProtein
     # K_C0 equation.
     K_C0 := k_b/(k_u + nu_t/l_e)
 
-    # Aproximation of E_m. 
-    # E_m_eq: E_m  := 0.62*l_p/l_e
-
     # No-aproximation of E_m.
     E_m_eq: E_m  := (l_p/l_e)*(1-(l_p/(l_p+l_e)^(l_p/l_e)))
     
+    # Alternarive: aproximation of E_m. 
+    # E_m_eq: E_m  := 0.62*l_p/l_e
+
     # Resource recruitment strength equation.
-    J_eq:   J    := E_m*omega/(d_m/K_C0 + mu*r)  
+    J_eq: J := E_m*omega/(d_m/K_C0 + mu*r)  
+
+    W := N*(1+1/E_m)*J
   end
 
   reaction

@@ -29,7 +29,7 @@ model AntitheticController(WildType)
   parameter
     # Antithetic sequestration affininty (1/molec/min).
     gamma = 100000
-    z1.omega = 10
+    z1.omega = 70
     z2.omega_max = 100
     # z12 is just produced by the antithetic reaction.
     z12.omega = 0
@@ -87,9 +87,8 @@ model AntitheticController(WildType)
 
   # Override equations.
   rule
-    m_p_eq:  m_p := p_r.m + p_nr.m + z1.m + z2.m + z12.m + x.m
-    J_sum_eq: J_sum := p_r.N*p_r.J + p_nr.N*p_nr.J + z1.N*z1.J + z2.N*z2.J + z12.N*z12.J + x.N*x.J
-    J_sum_E_eq: J_sum_E := p_r.N*(1+1/p_r.E_m)*p_r.J + p_nr.N*(1+1/p_nr.E_m)*p_nr.J + z1.N*(1+1/z1.E_m)*z1.J + z2.N*(1+1/z2.E_m)*z2.J + z12.N*(1+1/z12.E_m)*z12.J + x.N*(1+1/x.E_m)*x.J
+    WSum_equation:  WSum := p_r.W + p_nr.W + z1.W + z2.W + z12.W + x.W
+    m_p_equation:   m_p := p_r.m + p_nr.m + z1.m + z2.m + z12.m + x.m
   end
 
 end

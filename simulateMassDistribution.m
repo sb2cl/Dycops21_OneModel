@@ -123,8 +123,8 @@ title('Total ribosomes');
 
 figure(2);
 
-plot(OUT.cell__nu, OUT.cell__phi_b_t);
+plot(OUT.cell__nu, OUT.cell__phi_ht);
 grid on;
-title('$\phi_b^t$','Interpreter','latex');
+title('$\phi_t^h$','Interpreter','latex');
 ylim([0 1]);
 xlabel('Effective translation rate $\nu$','Interpreter','latex');

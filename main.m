@@ -35,7 +35,7 @@ out_2 = m.simout2struct(t,x,m.p);
 out = concatStruct(out_1, out_2);
 
 p = m.p;
-p.cell__nu_max = p.cell__nu_max*0.95;
+p.cell__nu = p.cell__nu*0.95;
 tspan = [m.opts.t_end+1000 m.opts.t_end+3000];
 [t,x] = ode15s(@(t,x) m.ode(t,x,p),tspan,x(end,:),opt);
 out_3 = m.simout2struct(t,x,p);
@@ -99,17 +99,22 @@ mass = [
     out.cell__p_r__m out.cell__p_nr__m out.cell__x__m controller
     ];
 
-subplot(2,1,1);
+subplot(3,1,1);
 
 area(out.t, mass);
 ylim([0 +inf])
 legend('ribo','ron-ribo','x','controller');
 
-subplot(2,1,2);
+subplot(3,1,2);
 
 area(out.t, mass./sum(mass')');
 ylim([0 +inf])
 legend('ribo','ron-ribo','x','controller');
+
+subplot(3,1,3);
+
+plot(out.t, 100*(controller + out.cell__x__m)./sum(mass')');
+ylim([0 +inf])
 
 
 

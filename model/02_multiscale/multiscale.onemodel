@@ -17,7 +17,7 @@ import './bioreactor/fedbatch.onemodel'
 ### META-MODEL OPTIONS ###
 
 # Cell model: 'wild_type', 'one_protein', 'antithetic'.
-cell_model = 'wild_type'
+cell_model = 'antithetic'
 
 # Mass equation: 'interpolated', 'jesus', 'fix'.
 mass_equation = 'interpolated'
@@ -73,7 +73,7 @@ end
 if strcmp(bioreactor, 'nu_fix')
   rule
     # Override nu equation in cell (aa/minute).
-    cell.nu_eq: cell.nu_t := cell.nu
+    cell.nu_equation:  cell.nu_t := cell.nu
   end
 end
 
