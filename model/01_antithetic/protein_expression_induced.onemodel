@@ -1,34 +1,55 @@
+# First, we import the model for consitutive protein expression.
 import './protein_expression.onemodel'
 
 model ProteinExpressionInduced(ProteinExpression)
+  # Model of the induced expression of a protein.
+  #
+  # This model extends ProteinExpression to allow the transcription to be
+  # induced by a transcription factor TF.
+
+  # The transcription factor is external to this model, so we need to define it
+  # as a input. Later on, we have to satisfy this input when we use this model.
   input
-    # Transcription factor which regulates expression ().
+    # Transcription factor which regulates expression (molec).
     TF
   end
 
+  # Definition of more model parameters.
   parameter
-    # Half-activation threshold ().
+    # Half-activation threshold (molec).
     h = 1
-    # Maximum mRNA transcription rate ().
+    # Maximum mRNA transcription rate (molec/min).
     omega_max = 1
   end
 
+  # In ProteinExpression, omega was a parameter. Now we want it to be variable,
+  # so we have to redefine it as an species
   species
-    # Override old omega.
+    # Override omega as a species, and its initial condition is set to zero.
     omega = 0
   end
 
   rule
+    # Now omega will depend on the value of TF.
     omega := omega_max*TF/h
   end
 
 end
 
 standalone
+  # Standalone example (this code is not imported with 'import').
+  #
+  # We define a constitutive expressed protein A as the transcription factor
+  # for inducing the expression of a protein B.
+
+  # Instantiate proteins A and B.
   A = ProteinExpression()
   B = ProteinExpressionInduced()
 
+  # Now is when we have to satisfy the inputs of protein B.
   rule
+    # The amount of protein A (A.protein) is the transcription factor of
+    # protein B (B.TF)
     B.TF := A.protein
   end
 end

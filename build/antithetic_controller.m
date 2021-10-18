@@ -22,71 +22,38 @@ classdef antithetic_controller
 		function p = default_parameters(~)
 			%% Default parameters value.
 			p = [];
-			p.cell__p_r__N = 55.0;
-			p.cell__p_r__omega = 7.33;
-			p.cell__p_r__d_m = 0.16;
-			p.cell__p_r__k_b = 4.7627;
-			p.cell__p_r__k_u = 119.7956;
-			p.cell__p_r__l_p = 195.0;
-			p.cell__p_r__l_e = 25.0;
-			p.cell__p_r__weigth = 0.0045;
-			p.cell__p_nr__N = 1735.0;
-			p.cell__p_nr__omega = 0.0361;
-			p.cell__p_nr__d_m = 0.2;
-			p.cell__p_nr__k_b = 12.4404;
-			p.cell__p_nr__k_u = 10.0454;
-			p.cell__p_nr__l_p = 333.0;
-			p.cell__p_nr__l_e = 25.0;
-			p.cell__K_sc = 0.1802;
-			p.cell__nu = 1260.0;
-			p.cell__m_aa = 1.826e-07;
-			p.cell__phi_m = 0.9473;
-			p.cell__z1__N = 1.0;
-			p.cell__z1__omega = 10.0;
-			p.cell__z1__d_m = 0.16;
-			p.cell__z1__k_b = 4.7627;
-			p.cell__z1__k_u = 119.7956;
-			p.cell__z1__l_p = 195.0;
-			p.cell__z1__l_e = 25.0;
-			p.cell__z2__N = 1.0;
-			p.cell__z2__d_m = 0.16;
-			p.cell__z2__k_b = 4.7627;
-			p.cell__z2__k_u = 119.7956;
-			p.cell__z2__l_p = 195.0;
-			p.cell__z2__l_e = 25.0;
-			p.cell__z2__omega_max = 100.0;
-			p.cell__z2__h = 100.0;
-			p.cell__z12__N = 1.0;
-			p.cell__z12__omega = 0.0;
-			p.cell__z12__d_m = 0.16;
-			p.cell__z12__k_b = 4.7627;
-			p.cell__z12__k_u = 119.7956;
-			p.cell__z12__l_p = 195.0;
-			p.cell__z12__l_e = 25.0;
-			p.cell__x__N = 1.0;
-			p.cell__x__d_m = 0.16;
-			p.cell__x__k_b = 4.7627;
-			p.cell__x__k_u = 119.7956;
-			p.cell__x__l_p = 195.0;
-			p.cell__x__l_e = 25.0;
-			p.cell__x__omega_max = 100.0;
-			p.cell__x__h = 100.0;
-			p.cell__gamma = 100000.0;
-			p.s = 3.6;
-			p.m_h = 450.0;
+			p.z1__omega = 1.0;
+			p.z1__phi = 1.0;
+			p.z1__k = 1.0;
+			p.z1__d = 0.0;
+			p.z2__phi = 1.0;
+			p.z2__k = 1.0;
+			p.z2__d = 0.0;
+			p.z2__h = 1.0;
+			p.z2__omega_max = 1.0;
+			p.z12__omega = 0.0;
+			p.z12__phi = 1.0;
+			p.z12__k = 1.0;
+			p.z12__d = 1.0;
+			p.x__phi = 1.0;
+			p.x__k = 1.0;
+			p.x__d = 1.0;
+			p.x__h = 1.0;
+			p.x__omega_max = 1.0;
+			p.gamma = 1.0;
 		end
 
 		function x0 = initial_conditions(~)
 			%% Default initial conditions.
 			x0 = [
-				100.0 % cell__p_r__m
-				100.0 % cell__p_nr__m
-				0.01 % cell__mu (algebraic)
-				350.0 % cell__r (algebraic)
-				0.0 % cell__z1__m
-				0.0 % cell__z2__m
-				0.0 % cell__z12__m
-				0.0 % cell__x__m
+				0.0 % z1__mRNA
+				0.0 % z1__protein
+				0.0 % z2__mRNA
+				0.0 % z2__protein
+				0.0 % z12__mRNA
+				0.0 % z12__protein
+				0.0 % x__mRNA
+				0.0 % x__protein
 			];
 		end
 
@@ -95,8 +62,8 @@ classdef antithetic_controller
 			M = [
 				1 0 0 0 0 0 0 0 
 				0 1 0 0 0 0 0 0 
-				0 0 0 0 0 0 0 0 
-				0 0 0 0 0 0 0 0 
+				0 0 1 0 0 0 0 0 
+				0 0 0 1 0 0 0 0 
 				0 0 0 0 1 0 0 0 
 				0 0 0 0 0 1 0 0 
 				0 0 0 0 0 0 1 0 
@@ -106,7 +73,7 @@ classdef antithetic_controller
 
 		function opts = simulation_options(~)
 			%% Default simulation options.
-			opts.t_end = 2000.0;
+			opts.t_end = 100.0;
 			opts.t_init = 0.0;
 		end
 
@@ -122,107 +89,45 @@ classdef antithetic_controller
 			%	 dx Array with the ODE.
 
 			% ODE and algebraic states:
-			cell__p_r__m = x(1,:);
-			cell__p_nr__m = x(2,:);
-			cell__mu = x(3,:);
-			cell__r = x(4,:);
-			cell__z1__m = x(5,:);
-			cell__z2__m = x(6,:);
-			cell__z12__m = x(7,:);
-			cell__x__m = x(8,:);
+			z1__mRNA = x(1,:);
+			z1__protein = x(2,:);
+			z2__mRNA = x(3,:);
+			z2__protein = x(4,:);
+			z12__mRNA = x(5,:);
+			z12__protein = x(6,:);
+			x__mRNA = x(7,:);
+			x__protein = x(8,:);
 
 			% Assigment states:
-			cell__s = p.s;
-			cell__m_h = p.m_h;
-			cell__p_r__mu = cell__mu;
-			cell__p_r__r = cell__r;
-			cell__p_r__m_h = cell__m_h;
-			cell__p_r__E_m = 3.459;
-			cell__p_r__r_t = cell__p_r__m./p.cell__p_r__weigth;
-			cell__p_nr__mu = cell__mu;
-			cell__p_nr__r = cell__r;
-			cell__p_nr__m_h = cell__m_h;
-			cell__p_nr__E_m = 6.3492;
-			cell__nu_t = p.cell__nu.*cell__s./(cell__s + p.cell__K_sc);
-			cell__m_p = cell__p_r__m + cell__p_nr__m + cell__z1__m + cell__z2__m + cell__z12__m + cell__x__m;
-			cell__z1__nu_t = cell__nu_t;
-			cell__z1__mu = cell__mu;
-			cell__z1__r = cell__r;
-			cell__z1__m_h = cell__m_h;
-			cell__z1__K_C0 = p.cell__z1__k_b./(p.cell__z1__k_u + cell__z1__nu_t./p.cell__z1__l_e);
-			cell__z1__E_m = (p.cell__z1__l_p./p.cell__z1__l_e).*(1 - p.cell__z1__l_p./(p.cell__z1__l_p + p.cell__z1__l_e).^(p.cell__z1__l_p./p.cell__z1__l_e));
-			cell__z1__J = cell__z1__E_m.*p.cell__z1__omega./(p.cell__z1__d_m./cell__z1__K_C0 + cell__z1__mu.*cell__z1__r);
-			cell__z1__W = p.cell__z1__N.*(1 + 1./cell__z1__E_m).*cell__z1__J;
-			cell__z2__nu_t = cell__nu_t;
-			cell__z2__mu = cell__mu;
-			cell__z2__r = cell__r;
-			cell__z2__m_h = cell__m_h;
-			cell__z2__K_C0 = p.cell__z2__k_b./(p.cell__z2__k_u + cell__z2__nu_t./p.cell__z2__l_e);
-			cell__z2__E_m = (p.cell__z2__l_p./p.cell__z2__l_e).*(1 - p.cell__z2__l_p./(p.cell__z2__l_p + p.cell__z2__l_e).^(p.cell__z2__l_p./p.cell__z2__l_e));
-			cell__z2__TF = cell__x__m;
-			cell__z12__nu_t = cell__nu_t;
-			cell__z12__mu = cell__mu;
-			cell__z12__r = cell__r;
-			cell__z12__m_h = cell__m_h;
-			cell__z12__K_C0 = p.cell__z12__k_b./(p.cell__z12__k_u + cell__z12__nu_t./p.cell__z12__l_e);
-			cell__z12__E_m = (p.cell__z12__l_p./p.cell__z12__l_e).*(1 - p.cell__z12__l_p./(p.cell__z12__l_p + p.cell__z12__l_e).^(p.cell__z12__l_p./p.cell__z12__l_e));
-			cell__z12__J = cell__z12__E_m.*p.cell__z12__omega./(p.cell__z12__d_m./cell__z12__K_C0 + cell__z12__mu.*cell__z12__r);
-			cell__z12__W = p.cell__z12__N.*(1 + 1./cell__z12__E_m).*cell__z12__J;
-			cell__x__nu_t = cell__nu_t;
-			cell__x__mu = cell__mu;
-			cell__x__r = cell__r;
-			cell__x__m_h = cell__m_h;
-			cell__x__K_C0 = p.cell__x__k_b./(p.cell__x__k_u + cell__x__nu_t./p.cell__x__l_e);
-			cell__x__E_m = (p.cell__x__l_p./p.cell__x__l_e).*(1 - p.cell__x__l_p./(p.cell__x__l_p + p.cell__x__l_e).^(p.cell__x__l_p./p.cell__x__l_e));
-			cell__x__TF = cell__z1__m;
-			cell__ref = (p.cell__z1__omega./p.cell__z2__omega_max).*p.cell__z2__h;
-			cell__p_r__nu_t = cell__nu_t;
-			cell__p_r__K_C0 = p.cell__p_r__k_b./(p.cell__p_r__k_u + cell__p_r__nu_t./p.cell__p_r__l_e);
-			cell__p_r__J = cell__p_r__E_m.*p.cell__p_r__omega./(p.cell__p_r__d_m./cell__p_r__K_C0 + cell__p_r__mu.*cell__p_r__r);
-			cell__p_r__W = p.cell__p_r__N.*(1 + 1./cell__p_r__E_m).*cell__p_r__J;
-			cell__p_nr__nu_t = cell__nu_t;
-			cell__p_nr__K_C0 = p.cell__p_nr__k_b./(p.cell__p_nr__k_u + cell__p_nr__nu_t./p.cell__p_nr__l_e);
-			cell__p_nr__J = cell__p_nr__E_m.*p.cell__p_nr__omega./(p.cell__p_nr__d_m./cell__p_nr__K_C0 + cell__p_nr__mu.*cell__p_nr__r);
-			cell__p_nr__W = p.cell__p_nr__N.*(1 + 1./cell__p_nr__E_m).*cell__p_nr__J;
-			cell__J_host_sum = p.cell__p_r__N.*cell__p_r__J + p.cell__p_nr__N.*cell__p_nr__J;
-			cell__z1__J_host_sum = cell__J_host_sum;
-			cell__z2__J_host_sum = cell__J_host_sum;
-			cell__z2__omega = p.cell__z2__omega_max.*cell__z2__TF./p.cell__z2__h;
-			cell__z2__J = cell__z2__E_m.*cell__z2__omega./(p.cell__z2__d_m./cell__z2__K_C0 + cell__z2__mu.*cell__z2__r);
-			cell__z2__W = p.cell__z2__N.*(1 + 1./cell__z2__E_m).*cell__z2__J;
-			cell__z12__J_host_sum = cell__J_host_sum;
-			cell__x__J_host_sum = cell__J_host_sum;
-			cell__x__omega = p.cell__x__omega_max.*cell__x__TF./p.cell__x__h;
-			cell__x__J = cell__x__E_m.*cell__x__omega./(p.cell__x__d_m./cell__x__K_C0 + cell__x__mu.*cell__x__r);
-			cell__x__W = p.cell__x__N.*(1 + 1./cell__x__E_m).*cell__x__J;
-			cell__p_r__J_host_sum = cell__J_host_sum;
-			cell__p_nr__J_host_sum = cell__J_host_sum;
-			cell__WSum = cell__p_r__W + cell__p_nr__W + cell__z1__W + cell__z2__W + cell__z12__W + cell__x__W;
-			cell__phi_ht = (p.cell__p_r__N.*cell__p_r__J + p.cell__p_nr__N.*cell__p_nr__J)./(1 + cell__WSum);
+			z2__TF = x__protein;
+			x__TF = z1__protein;
+			ref = (p.z1__omega./p.z2__omega_max).*(p.z2__phi./p.z1__phi).*(p.z1__k./p.z2__k).*p.z2__h;
+			z2__omega = p.z2__omega_max.*z2__TF./p.z2__h;
+			x__omega = p.x__omega_max.*x__TF./p.x__h;
 
-			% der(cell__p_r__m)
-			dx(1,1) =  + ((cell__p_r__m_h.*p.cell__p_r__N.*cell__p_r__J./cell__p_r__J_host_sum - cell__p_r__m).*cell__p_r__mu);
+			% der(z1__mRNA)
+			dx(1,1) =  + (p.z1__omega) - (p.z1__phi.*z1__mRNA) + (p.z1__k.*z1__mRNA) - (p.z1__k.*z1__mRNA);
 
-			% der(cell__p_nr__m)
-			dx(2,1) =  + ((cell__p_nr__m_h.*p.cell__p_nr__N.*cell__p_nr__J./cell__p_nr__J_host_sum - cell__p_nr__m).*cell__p_nr__mu);
+			% der(z1__protein)
+			dx(2,1) =  + (p.z1__k.*z1__mRNA) - (p.z1__d.*z1__protein) - (p.gamma.*z1__protein.*z2__protein);
 
-			% der(cell__mu)
-			dx(3,1) = cell__mu - (p.cell__m_aa./cell__m_h).*cell__nu_t.*cell__phi_ht.*p.cell__phi_m.*cell__p_r__r_t;
+			% der(z2__mRNA)
+			dx(3,1) =  + (z2__omega) - (p.z2__phi.*z2__mRNA) + (p.z2__k.*z2__mRNA) - (p.z2__k.*z2__mRNA);
 
-			% der(cell__r)
-			dx(4,1) = cell__r - p.cell__phi_m.*cell__p_r__r_t./(1 + cell__WSum);
+			% der(z2__protein)
+			dx(4,1) =  + (p.z2__k.*z2__mRNA) - (p.z2__d.*z2__protein) - (p.gamma.*z1__protein.*z2__protein);
 
-			% der(cell__z1__m)
-			dx(5,1) =  + ((cell__z1__m_h.*p.cell__z1__N.*cell__z1__J./cell__z1__J_host_sum - cell__z1__m).*cell__z1__mu) - (p.cell__gamma.*cell__z1__m.*cell__z2__m);
+			% der(z12__mRNA)
+			dx(5,1) =  + (p.z12__omega) - (p.z12__phi.*z12__mRNA) + (p.z12__k.*z12__mRNA) - (p.z12__k.*z12__mRNA);
 
-			% der(cell__z2__m)
-			dx(6,1) =  + ((cell__z2__m_h.*p.cell__z2__N.*cell__z2__J./cell__z2__J_host_sum - cell__z2__m).*cell__z2__mu) - (p.cell__gamma.*cell__z1__m.*cell__z2__m);
+			% der(z12__protein)
+			dx(6,1) =  + (p.z12__k.*z12__mRNA) - (p.z12__d.*z12__protein) + (p.gamma.*z1__protein.*z2__protein);
 
-			% der(cell__z12__m)
-			dx(7,1) =  + ((cell__z12__m_h.*p.cell__z12__N.*cell__z12__J./cell__z12__J_host_sum - cell__z12__m).*cell__z12__mu) + (p.cell__gamma.*cell__z1__m.*cell__z2__m);
+			% der(x__mRNA)
+			dx(7,1) =  + (x__omega) - (p.x__phi.*x__mRNA) + (p.x__k.*x__mRNA) - (p.x__k.*x__mRNA);
 
-			% der(cell__x__m)
-			dx(8,1) =  + ((cell__x__m_h.*p.cell__x__N.*cell__x__J./cell__x__J_host_sum - cell__x__m).*cell__x__mu);
+			% der(x__protein)
+			dx(8,1) =  + (p.x__k.*x__mRNA) - (p.x__d.*x__protein);
 
 		end
 		function out = simout2struct(~,t,x,p)
@@ -231,83 +136,21 @@ classdef antithetic_controller
 			% We need to transpose state matrix.
 			x = x';
 			% ODE and algebraic states:
-			cell__p_r__m = x(1,:);
-			cell__p_nr__m = x(2,:);
-			cell__mu = x(3,:);
-			cell__r = x(4,:);
-			cell__z1__m = x(5,:);
-			cell__z2__m = x(6,:);
-			cell__z12__m = x(7,:);
-			cell__x__m = x(8,:);
+			z1__mRNA = x(1,:);
+			z1__protein = x(2,:);
+			z2__mRNA = x(3,:);
+			z2__protein = x(4,:);
+			z12__mRNA = x(5,:);
+			z12__protein = x(6,:);
+			x__mRNA = x(7,:);
+			x__protein = x(8,:);
 
 			% Assigment states:
-			cell__s = p.s;
-			cell__m_h = p.m_h;
-			cell__p_r__mu = cell__mu;
-			cell__p_r__r = cell__r;
-			cell__p_r__m_h = cell__m_h;
-			cell__p_r__E_m = 3.459;
-			cell__p_r__r_t = cell__p_r__m./p.cell__p_r__weigth;
-			cell__p_nr__mu = cell__mu;
-			cell__p_nr__r = cell__r;
-			cell__p_nr__m_h = cell__m_h;
-			cell__p_nr__E_m = 6.3492;
-			cell__nu_t = p.cell__nu.*cell__s./(cell__s + p.cell__K_sc);
-			cell__m_p = cell__p_r__m + cell__p_nr__m + cell__z1__m + cell__z2__m + cell__z12__m + cell__x__m;
-			cell__z1__nu_t = cell__nu_t;
-			cell__z1__mu = cell__mu;
-			cell__z1__r = cell__r;
-			cell__z1__m_h = cell__m_h;
-			cell__z1__K_C0 = p.cell__z1__k_b./(p.cell__z1__k_u + cell__z1__nu_t./p.cell__z1__l_e);
-			cell__z1__E_m = (p.cell__z1__l_p./p.cell__z1__l_e).*(1 - p.cell__z1__l_p./(p.cell__z1__l_p + p.cell__z1__l_e).^(p.cell__z1__l_p./p.cell__z1__l_e));
-			cell__z1__J = cell__z1__E_m.*p.cell__z1__omega./(p.cell__z1__d_m./cell__z1__K_C0 + cell__z1__mu.*cell__z1__r);
-			cell__z1__W = p.cell__z1__N.*(1 + 1./cell__z1__E_m).*cell__z1__J;
-			cell__z2__nu_t = cell__nu_t;
-			cell__z2__mu = cell__mu;
-			cell__z2__r = cell__r;
-			cell__z2__m_h = cell__m_h;
-			cell__z2__K_C0 = p.cell__z2__k_b./(p.cell__z2__k_u + cell__z2__nu_t./p.cell__z2__l_e);
-			cell__z2__E_m = (p.cell__z2__l_p./p.cell__z2__l_e).*(1 - p.cell__z2__l_p./(p.cell__z2__l_p + p.cell__z2__l_e).^(p.cell__z2__l_p./p.cell__z2__l_e));
-			cell__z2__TF = cell__x__m;
-			cell__z12__nu_t = cell__nu_t;
-			cell__z12__mu = cell__mu;
-			cell__z12__r = cell__r;
-			cell__z12__m_h = cell__m_h;
-			cell__z12__K_C0 = p.cell__z12__k_b./(p.cell__z12__k_u + cell__z12__nu_t./p.cell__z12__l_e);
-			cell__z12__E_m = (p.cell__z12__l_p./p.cell__z12__l_e).*(1 - p.cell__z12__l_p./(p.cell__z12__l_p + p.cell__z12__l_e).^(p.cell__z12__l_p./p.cell__z12__l_e));
-			cell__z12__J = cell__z12__E_m.*p.cell__z12__omega./(p.cell__z12__d_m./cell__z12__K_C0 + cell__z12__mu.*cell__z12__r);
-			cell__z12__W = p.cell__z12__N.*(1 + 1./cell__z12__E_m).*cell__z12__J;
-			cell__x__nu_t = cell__nu_t;
-			cell__x__mu = cell__mu;
-			cell__x__r = cell__r;
-			cell__x__m_h = cell__m_h;
-			cell__x__K_C0 = p.cell__x__k_b./(p.cell__x__k_u + cell__x__nu_t./p.cell__x__l_e);
-			cell__x__E_m = (p.cell__x__l_p./p.cell__x__l_e).*(1 - p.cell__x__l_p./(p.cell__x__l_p + p.cell__x__l_e).^(p.cell__x__l_p./p.cell__x__l_e));
-			cell__x__TF = cell__z1__m;
-			cell__ref = (p.cell__z1__omega./p.cell__z2__omega_max).*p.cell__z2__h;
-			cell__p_r__nu_t = cell__nu_t;
-			cell__p_r__K_C0 = p.cell__p_r__k_b./(p.cell__p_r__k_u + cell__p_r__nu_t./p.cell__p_r__l_e);
-			cell__p_r__J = cell__p_r__E_m.*p.cell__p_r__omega./(p.cell__p_r__d_m./cell__p_r__K_C0 + cell__p_r__mu.*cell__p_r__r);
-			cell__p_r__W = p.cell__p_r__N.*(1 + 1./cell__p_r__E_m).*cell__p_r__J;
-			cell__p_nr__nu_t = cell__nu_t;
-			cell__p_nr__K_C0 = p.cell__p_nr__k_b./(p.cell__p_nr__k_u + cell__p_nr__nu_t./p.cell__p_nr__l_e);
-			cell__p_nr__J = cell__p_nr__E_m.*p.cell__p_nr__omega./(p.cell__p_nr__d_m./cell__p_nr__K_C0 + cell__p_nr__mu.*cell__p_nr__r);
-			cell__p_nr__W = p.cell__p_nr__N.*(1 + 1./cell__p_nr__E_m).*cell__p_nr__J;
-			cell__J_host_sum = p.cell__p_r__N.*cell__p_r__J + p.cell__p_nr__N.*cell__p_nr__J;
-			cell__z1__J_host_sum = cell__J_host_sum;
-			cell__z2__J_host_sum = cell__J_host_sum;
-			cell__z2__omega = p.cell__z2__omega_max.*cell__z2__TF./p.cell__z2__h;
-			cell__z2__J = cell__z2__E_m.*cell__z2__omega./(p.cell__z2__d_m./cell__z2__K_C0 + cell__z2__mu.*cell__z2__r);
-			cell__z2__W = p.cell__z2__N.*(1 + 1./cell__z2__E_m).*cell__z2__J;
-			cell__z12__J_host_sum = cell__J_host_sum;
-			cell__x__J_host_sum = cell__J_host_sum;
-			cell__x__omega = p.cell__x__omega_max.*cell__x__TF./p.cell__x__h;
-			cell__x__J = cell__x__E_m.*cell__x__omega./(p.cell__x__d_m./cell__x__K_C0 + cell__x__mu.*cell__x__r);
-			cell__x__W = p.cell__x__N.*(1 + 1./cell__x__E_m).*cell__x__J;
-			cell__p_r__J_host_sum = cell__J_host_sum;
-			cell__p_nr__J_host_sum = cell__J_host_sum;
-			cell__WSum = cell__p_r__W + cell__p_nr__W + cell__z1__W + cell__z2__W + cell__z12__W + cell__x__W;
-			cell__phi_ht = (p.cell__p_r__N.*cell__p_r__J + p.cell__p_nr__N.*cell__p_nr__J)./(1 + cell__WSum);
+			z2__TF = x__protein;
+			x__TF = z1__protein;
+			ref = (p.z1__omega./p.z2__omega_max).*(p.z2__phi./p.z1__phi).*(p.z1__k./p.z2__k).*p.z2__h;
+			z2__omega = p.z2__omega_max.*z2__TF./p.z2__h;
+			x__omega = p.x__omega_max.*x__TF./p.x__h;
 
 			% Save simulation time.
 			out.t = t;
@@ -317,593 +160,124 @@ classdef antithetic_controller
 
 
 			% Save states.
-			out.cell__s = (cell__s.*ones_t)';
-			out.cell__m_h = (cell__m_h.*ones_t)';
-			out.cell__p_r__nu_t = (cell__p_r__nu_t.*ones_t)';
-			out.cell__p_r__mu = (cell__p_r__mu.*ones_t)';
-			out.cell__p_r__r = (cell__p_r__r.*ones_t)';
-			out.cell__p_r__m_h = (cell__p_r__m_h.*ones_t)';
-			out.cell__p_r__J_host_sum = (cell__p_r__J_host_sum.*ones_t)';
-			out.cell__p_r__K_C0 = (cell__p_r__K_C0.*ones_t)';
-			out.cell__p_r__E_m = (cell__p_r__E_m.*ones_t)';
-			out.cell__p_r__J = (cell__p_r__J.*ones_t)';
-			out.cell__p_r__W = (cell__p_r__W.*ones_t)';
-			out.cell__p_r__m = (cell__p_r__m.*ones_t)';
-			out.cell__p_r__r_t = (cell__p_r__r_t.*ones_t)';
-			out.cell__p_nr__nu_t = (cell__p_nr__nu_t.*ones_t)';
-			out.cell__p_nr__mu = (cell__p_nr__mu.*ones_t)';
-			out.cell__p_nr__r = (cell__p_nr__r.*ones_t)';
-			out.cell__p_nr__m_h = (cell__p_nr__m_h.*ones_t)';
-			out.cell__p_nr__J_host_sum = (cell__p_nr__J_host_sum.*ones_t)';
-			out.cell__p_nr__K_C0 = (cell__p_nr__K_C0.*ones_t)';
-			out.cell__p_nr__E_m = (cell__p_nr__E_m.*ones_t)';
-			out.cell__p_nr__J = (cell__p_nr__J.*ones_t)';
-			out.cell__p_nr__W = (cell__p_nr__W.*ones_t)';
-			out.cell__p_nr__m = (cell__p_nr__m.*ones_t)';
-			out.cell__nu_t = (cell__nu_t.*ones_t)';
-			out.cell__mu = (cell__mu.*ones_t)';
-			out.cell__m_p = (cell__m_p.*ones_t)';
-			out.cell__J_host_sum = (cell__J_host_sum.*ones_t)';
-			out.cell__WSum = (cell__WSum.*ones_t)';
-			out.cell__phi_ht = (cell__phi_ht.*ones_t)';
-			out.cell__r = (cell__r.*ones_t)';
-			out.cell__z1__nu_t = (cell__z1__nu_t.*ones_t)';
-			out.cell__z1__mu = (cell__z1__mu.*ones_t)';
-			out.cell__z1__r = (cell__z1__r.*ones_t)';
-			out.cell__z1__m_h = (cell__z1__m_h.*ones_t)';
-			out.cell__z1__J_host_sum = (cell__z1__J_host_sum.*ones_t)';
-			out.cell__z1__K_C0 = (cell__z1__K_C0.*ones_t)';
-			out.cell__z1__E_m = (cell__z1__E_m.*ones_t)';
-			out.cell__z1__J = (cell__z1__J.*ones_t)';
-			out.cell__z1__W = (cell__z1__W.*ones_t)';
-			out.cell__z1__m = (cell__z1__m.*ones_t)';
-			out.cell__z2__nu_t = (cell__z2__nu_t.*ones_t)';
-			out.cell__z2__mu = (cell__z2__mu.*ones_t)';
-			out.cell__z2__r = (cell__z2__r.*ones_t)';
-			out.cell__z2__m_h = (cell__z2__m_h.*ones_t)';
-			out.cell__z2__J_host_sum = (cell__z2__J_host_sum.*ones_t)';
-			out.cell__z2__omega = (cell__z2__omega.*ones_t)';
-			out.cell__z2__K_C0 = (cell__z2__K_C0.*ones_t)';
-			out.cell__z2__E_m = (cell__z2__E_m.*ones_t)';
-			out.cell__z2__J = (cell__z2__J.*ones_t)';
-			out.cell__z2__W = (cell__z2__W.*ones_t)';
-			out.cell__z2__m = (cell__z2__m.*ones_t)';
-			out.cell__z2__TF = (cell__z2__TF.*ones_t)';
-			out.cell__z12__nu_t = (cell__z12__nu_t.*ones_t)';
-			out.cell__z12__mu = (cell__z12__mu.*ones_t)';
-			out.cell__z12__r = (cell__z12__r.*ones_t)';
-			out.cell__z12__m_h = (cell__z12__m_h.*ones_t)';
-			out.cell__z12__J_host_sum = (cell__z12__J_host_sum.*ones_t)';
-			out.cell__z12__K_C0 = (cell__z12__K_C0.*ones_t)';
-			out.cell__z12__E_m = (cell__z12__E_m.*ones_t)';
-			out.cell__z12__J = (cell__z12__J.*ones_t)';
-			out.cell__z12__W = (cell__z12__W.*ones_t)';
-			out.cell__z12__m = (cell__z12__m.*ones_t)';
-			out.cell__x__nu_t = (cell__x__nu_t.*ones_t)';
-			out.cell__x__mu = (cell__x__mu.*ones_t)';
-			out.cell__x__r = (cell__x__r.*ones_t)';
-			out.cell__x__m_h = (cell__x__m_h.*ones_t)';
-			out.cell__x__J_host_sum = (cell__x__J_host_sum.*ones_t)';
-			out.cell__x__omega = (cell__x__omega.*ones_t)';
-			out.cell__x__K_C0 = (cell__x__K_C0.*ones_t)';
-			out.cell__x__E_m = (cell__x__E_m.*ones_t)';
-			out.cell__x__J = (cell__x__J.*ones_t)';
-			out.cell__x__W = (cell__x__W.*ones_t)';
-			out.cell__x__m = (cell__x__m.*ones_t)';
-			out.cell__x__TF = (cell__x__TF.*ones_t)';
-			out.cell__ref = (cell__ref.*ones_t)';
+			out.z1__mRNA = (z1__mRNA.*ones_t)';
+			out.z1__protein = (z1__protein.*ones_t)';
+			out.z2__mRNA = (z2__mRNA.*ones_t)';
+			out.z2__protein = (z2__protein.*ones_t)';
+			out.z2__omega = (z2__omega.*ones_t)';
+			out.z2__TF = (z2__TF.*ones_t)';
+			out.z12__mRNA = (z12__mRNA.*ones_t)';
+			out.z12__protein = (z12__protein.*ones_t)';
+			out.x__mRNA = (x__mRNA.*ones_t)';
+			out.x__protein = (x__protein.*ones_t)';
+			out.x__omega = (x__omega.*ones_t)';
+			out.x__TF = (x__TF.*ones_t)';
+			out.ref = (ref.*ones_t)';
 
 			% Save parameters.
-			out.cell__p_r__N = (p.cell__p_r__N.*ones_t)';
-			out.cell__p_r__omega = (p.cell__p_r__omega.*ones_t)';
-			out.cell__p_r__d_m = (p.cell__p_r__d_m.*ones_t)';
-			out.cell__p_r__k_b = (p.cell__p_r__k_b.*ones_t)';
-			out.cell__p_r__k_u = (p.cell__p_r__k_u.*ones_t)';
-			out.cell__p_r__l_p = (p.cell__p_r__l_p.*ones_t)';
-			out.cell__p_r__l_e = (p.cell__p_r__l_e.*ones_t)';
-			out.cell__p_r__weigth = (p.cell__p_r__weigth.*ones_t)';
-			out.cell__p_nr__N = (p.cell__p_nr__N.*ones_t)';
-			out.cell__p_nr__omega = (p.cell__p_nr__omega.*ones_t)';
-			out.cell__p_nr__d_m = (p.cell__p_nr__d_m.*ones_t)';
-			out.cell__p_nr__k_b = (p.cell__p_nr__k_b.*ones_t)';
-			out.cell__p_nr__k_u = (p.cell__p_nr__k_u.*ones_t)';
-			out.cell__p_nr__l_p = (p.cell__p_nr__l_p.*ones_t)';
-			out.cell__p_nr__l_e = (p.cell__p_nr__l_e.*ones_t)';
-			out.cell__K_sc = (p.cell__K_sc.*ones_t)';
-			out.cell__nu = (p.cell__nu.*ones_t)';
-			out.cell__m_aa = (p.cell__m_aa.*ones_t)';
-			out.cell__phi_m = (p.cell__phi_m.*ones_t)';
-			out.cell__z1__N = (p.cell__z1__N.*ones_t)';
-			out.cell__z1__omega = (p.cell__z1__omega.*ones_t)';
-			out.cell__z1__d_m = (p.cell__z1__d_m.*ones_t)';
-			out.cell__z1__k_b = (p.cell__z1__k_b.*ones_t)';
-			out.cell__z1__k_u = (p.cell__z1__k_u.*ones_t)';
-			out.cell__z1__l_p = (p.cell__z1__l_p.*ones_t)';
-			out.cell__z1__l_e = (p.cell__z1__l_e.*ones_t)';
-			out.cell__z2__N = (p.cell__z2__N.*ones_t)';
-			out.cell__z2__d_m = (p.cell__z2__d_m.*ones_t)';
-			out.cell__z2__k_b = (p.cell__z2__k_b.*ones_t)';
-			out.cell__z2__k_u = (p.cell__z2__k_u.*ones_t)';
-			out.cell__z2__l_p = (p.cell__z2__l_p.*ones_t)';
-			out.cell__z2__l_e = (p.cell__z2__l_e.*ones_t)';
-			out.cell__z2__omega_max = (p.cell__z2__omega_max.*ones_t)';
-			out.cell__z2__h = (p.cell__z2__h.*ones_t)';
-			out.cell__z12__N = (p.cell__z12__N.*ones_t)';
-			out.cell__z12__omega = (p.cell__z12__omega.*ones_t)';
-			out.cell__z12__d_m = (p.cell__z12__d_m.*ones_t)';
-			out.cell__z12__k_b = (p.cell__z12__k_b.*ones_t)';
-			out.cell__z12__k_u = (p.cell__z12__k_u.*ones_t)';
-			out.cell__z12__l_p = (p.cell__z12__l_p.*ones_t)';
-			out.cell__z12__l_e = (p.cell__z12__l_e.*ones_t)';
-			out.cell__x__N = (p.cell__x__N.*ones_t)';
-			out.cell__x__d_m = (p.cell__x__d_m.*ones_t)';
-			out.cell__x__k_b = (p.cell__x__k_b.*ones_t)';
-			out.cell__x__k_u = (p.cell__x__k_u.*ones_t)';
-			out.cell__x__l_p = (p.cell__x__l_p.*ones_t)';
-			out.cell__x__l_e = (p.cell__x__l_e.*ones_t)';
-			out.cell__x__omega_max = (p.cell__x__omega_max.*ones_t)';
-			out.cell__x__h = (p.cell__x__h.*ones_t)';
-			out.cell__gamma = (p.cell__gamma.*ones_t)';
-			out.s = (p.s.*ones_t)';
-			out.m_h = (p.m_h.*ones_t)';
+			out.z1__omega = (p.z1__omega.*ones_t)';
+			out.z1__phi = (p.z1__phi.*ones_t)';
+			out.z1__k = (p.z1__k.*ones_t)';
+			out.z1__d = (p.z1__d.*ones_t)';
+			out.z2__phi = (p.z2__phi.*ones_t)';
+			out.z2__k = (p.z2__k.*ones_t)';
+			out.z2__d = (p.z2__d.*ones_t)';
+			out.z2__h = (p.z2__h.*ones_t)';
+			out.z2__omega_max = (p.z2__omega_max.*ones_t)';
+			out.z12__omega = (p.z12__omega.*ones_t)';
+			out.z12__phi = (p.z12__phi.*ones_t)';
+			out.z12__k = (p.z12__k.*ones_t)';
+			out.z12__d = (p.z12__d.*ones_t)';
+			out.x__phi = (p.x__phi.*ones_t)';
+			out.x__k = (p.x__k.*ones_t)';
+			out.x__d = (p.x__d.*ones_t)';
+			out.x__h = (p.x__h.*ones_t)';
+			out.x__omega_max = (p.x__omega_max.*ones_t)';
+			out.gamma = (p.gamma.*ones_t)';
 
 		end
 		function plot(~,out)
 			%% Plot simulation result.
-			figure('Name','cell');
-			subplot(4,3,1);
-			plot(out.t, out.cell__s);
-			title("cell__s");
+			figure('Name','z1');
+			subplot(2,1,1);
+			plot(out.t, out.z1__mRNA);
+			title("z1__mRNA");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,2);
-			plot(out.t, out.cell__m_h);
-			title("cell__m_h");
+			subplot(2,1,2);
+			plot(out.t, out.z1__protein);
+			title("z1__protein");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,3);
-			plot(out.t, out.cell__nu_t);
-			title("cell__nu_t");
+			figure('Name','z2');
+			subplot(2,2,1);
+			plot(out.t, out.z2__mRNA);
+			title("z2__mRNA");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,4);
-			plot(out.t, out.cell__mu);
-			title("cell__mu");
+			subplot(2,2,2);
+			plot(out.t, out.z2__protein);
+			title("z2__protein");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,5);
-			plot(out.t, out.cell__m_p);
-			title("cell__m_p");
+			subplot(2,2,3);
+			plot(out.t, out.z2__omega);
+			title("z2__omega");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,6);
-			plot(out.t, out.cell__J_host_sum);
-			title("cell__J_host_sum");
+			subplot(2,2,4);
+			plot(out.t, out.z2__TF);
+			title("z2__TF");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,7);
-			plot(out.t, out.cell__WSum);
-			title("cell__WSum");
+			figure('Name','z12');
+			subplot(2,1,1);
+			plot(out.t, out.z12__mRNA);
+			title("z12__mRNA");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,8);
-			plot(out.t, out.cell__phi_ht);
-			title("cell__phi_ht");
+			subplot(2,1,2);
+			plot(out.t, out.z12__protein);
+			title("z12__protein");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,9);
-			plot(out.t, out.cell__r);
-			title("cell__r");
+			figure('Name','x');
+			subplot(2,2,1);
+			plot(out.t, out.x__mRNA);
+			title("x__mRNA");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,10);
-			plot(out.t, out.cell__ref);
-			title("cell__ref");
+			subplot(2,2,2);
+			plot(out.t, out.x__protein);
+			title("x__protein");
 			ylim([0, +inf]);
 			grid on;
 
-			figure('Name','cell__p_r');
-			subplot(4,3,1);
-			plot(out.t, out.cell__p_r__nu_t);
-			title("cell__p_r__nu_t");
+			subplot(2,2,3);
+			plot(out.t, out.x__omega);
+			title("x__omega");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,2);
-			plot(out.t, out.cell__p_r__mu);
-			title("cell__p_r__mu");
+			subplot(2,2,4);
+			plot(out.t, out.x__TF);
+			title("x__TF");
 			ylim([0, +inf]);
 			grid on;
 
-			subplot(4,3,3);
-			plot(out.t, out.cell__p_r__r);
-			title("cell__p_r__r");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,4);
-			plot(out.t, out.cell__p_r__m_h);
-			title("cell__p_r__m_h");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,5);
-			plot(out.t, out.cell__p_r__J_host_sum);
-			title("cell__p_r__J_host_sum");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,6);
-			plot(out.t, out.cell__p_r__K_C0);
-			title("cell__p_r__K_C0");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,7);
-			plot(out.t, out.cell__p_r__E_m);
-			title("cell__p_r__E_m");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,8);
-			plot(out.t, out.cell__p_r__J);
-			title("cell__p_r__J");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,9);
-			plot(out.t, out.cell__p_r__W);
-			title("cell__p_r__W");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,10);
-			plot(out.t, out.cell__p_r__m);
-			title("cell__p_r__m");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,11);
-			plot(out.t, out.cell__p_r__r_t);
-			title("cell__p_r__r_t");
-			ylim([0, +inf]);
-			grid on;
-
-			figure('Name','cell__p_nr');
-			subplot(4,3,1);
-			plot(out.t, out.cell__p_nr__nu_t);
-			title("cell__p_nr__nu_t");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,2);
-			plot(out.t, out.cell__p_nr__mu);
-			title("cell__p_nr__mu");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,3);
-			plot(out.t, out.cell__p_nr__r);
-			title("cell__p_nr__r");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,4);
-			plot(out.t, out.cell__p_nr__m_h);
-			title("cell__p_nr__m_h");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,5);
-			plot(out.t, out.cell__p_nr__J_host_sum);
-			title("cell__p_nr__J_host_sum");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,6);
-			plot(out.t, out.cell__p_nr__K_C0);
-			title("cell__p_nr__K_C0");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,7);
-			plot(out.t, out.cell__p_nr__E_m);
-			title("cell__p_nr__E_m");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,8);
-			plot(out.t, out.cell__p_nr__J);
-			title("cell__p_nr__J");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,9);
-			plot(out.t, out.cell__p_nr__W);
-			title("cell__p_nr__W");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,10);
-			plot(out.t, out.cell__p_nr__m);
-			title("cell__p_nr__m");
-			ylim([0, +inf]);
-			grid on;
-
-			figure('Name','cell__z1');
-			subplot(4,3,1);
-			plot(out.t, out.cell__z1__nu_t);
-			title("cell__z1__nu_t");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,2);
-			plot(out.t, out.cell__z1__mu);
-			title("cell__z1__mu");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,3);
-			plot(out.t, out.cell__z1__r);
-			title("cell__z1__r");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,4);
-			plot(out.t, out.cell__z1__m_h);
-			title("cell__z1__m_h");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,5);
-			plot(out.t, out.cell__z1__J_host_sum);
-			title("cell__z1__J_host_sum");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,6);
-			plot(out.t, out.cell__z1__K_C0);
-			title("cell__z1__K_C0");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,7);
-			plot(out.t, out.cell__z1__E_m);
-			title("cell__z1__E_m");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,8);
-			plot(out.t, out.cell__z1__J);
-			title("cell__z1__J");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,9);
-			plot(out.t, out.cell__z1__W);
-			title("cell__z1__W");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,10);
-			plot(out.t, out.cell__z1__m);
-			title("cell__z1__m");
-			ylim([0, +inf]);
-			grid on;
-
-			figure('Name','cell__z2');
-			subplot(4,3,1);
-			plot(out.t, out.cell__z2__nu_t);
-			title("cell__z2__nu_t");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,2);
-			plot(out.t, out.cell__z2__mu);
-			title("cell__z2__mu");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,3);
-			plot(out.t, out.cell__z2__r);
-			title("cell__z2__r");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,4);
-			plot(out.t, out.cell__z2__m_h);
-			title("cell__z2__m_h");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,5);
-			plot(out.t, out.cell__z2__J_host_sum);
-			title("cell__z2__J_host_sum");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,6);
-			plot(out.t, out.cell__z2__omega);
-			title("cell__z2__omega");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,7);
-			plot(out.t, out.cell__z2__K_C0);
-			title("cell__z2__K_C0");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,8);
-			plot(out.t, out.cell__z2__E_m);
-			title("cell__z2__E_m");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,9);
-			plot(out.t, out.cell__z2__J);
-			title("cell__z2__J");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,10);
-			plot(out.t, out.cell__z2__W);
-			title("cell__z2__W");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,11);
-			plot(out.t, out.cell__z2__m);
-			title("cell__z2__m");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,12);
-			plot(out.t, out.cell__z2__TF);
-			title("cell__z2__TF");
-			ylim([0, +inf]);
-			grid on;
-
-			figure('Name','cell__z12');
-			subplot(4,3,1);
-			plot(out.t, out.cell__z12__nu_t);
-			title("cell__z12__nu_t");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,2);
-			plot(out.t, out.cell__z12__mu);
-			title("cell__z12__mu");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,3);
-			plot(out.t, out.cell__z12__r);
-			title("cell__z12__r");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,4);
-			plot(out.t, out.cell__z12__m_h);
-			title("cell__z12__m_h");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,5);
-			plot(out.t, out.cell__z12__J_host_sum);
-			title("cell__z12__J_host_sum");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,6);
-			plot(out.t, out.cell__z12__K_C0);
-			title("cell__z12__K_C0");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,7);
-			plot(out.t, out.cell__z12__E_m);
-			title("cell__z12__E_m");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,8);
-			plot(out.t, out.cell__z12__J);
-			title("cell__z12__J");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,9);
-			plot(out.t, out.cell__z12__W);
-			title("cell__z12__W");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,10);
-			plot(out.t, out.cell__z12__m);
-			title("cell__z12__m");
-			ylim([0, +inf]);
-			grid on;
-
-			figure('Name','cell__x');
-			subplot(4,3,1);
-			plot(out.t, out.cell__x__nu_t);
-			title("cell__x__nu_t");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,2);
-			plot(out.t, out.cell__x__mu);
-			title("cell__x__mu");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,3);
-			plot(out.t, out.cell__x__r);
-			title("cell__x__r");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,4);
-			plot(out.t, out.cell__x__m_h);
-			title("cell__x__m_h");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,5);
-			plot(out.t, out.cell__x__J_host_sum);
-			title("cell__x__J_host_sum");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,6);
-			plot(out.t, out.cell__x__omega);
-			title("cell__x__omega");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,7);
-			plot(out.t, out.cell__x__K_C0);
-			title("cell__x__K_C0");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,8);
-			plot(out.t, out.cell__x__E_m);
-			title("cell__x__E_m");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,9);
-			plot(out.t, out.cell__x__J);
-			title("cell__x__J");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,10);
-			plot(out.t, out.cell__x__W);
-			title("cell__x__W");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,11);
-			plot(out.t, out.cell__x__m);
-			title("cell__x__m");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(4,3,12);
-			plot(out.t, out.cell__x__TF);
-			title("cell__x__TF");
+			figure('Name','');
+			subplot(1,1,1);
+			plot(out.t, out.ref);
+			title("ref");
 			ylim([0, +inf]);
 			grid on;
 

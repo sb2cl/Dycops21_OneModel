@@ -1,0 +1,73 @@
+# First we import the models of consitutive and induced protein expression.
+import './protein_expression.onemodel'
+import './protein_expression_induced.onemodel'
+
+# This model implements an antithetic controller. 
+#                           
+# This model uses the previous defined models to implement an antithetic
+# controller. Sigma (z1) is a contitutive expressed protein that induces the
+# expression of the protein of interest (x). Then x induces the expression of
+# anti-sigma (z2). z1 and z2 perform an aniquilation reaction in which they
+# created the sigma-antisigma complex.
+
+# Diagram of the reactions:
+#
+#   0─►z1─────────┐
+#       │         ▼
+#       ├──►z12  0─►x
+#       │           │ 
+#   0─►z2           │ 
+#     ▲             │
+#     └─────────────┘          
+
+# Sigma is constitutive expressed.
+z1 = ProteinExpression()
+
+# Anti-sigma is induced.
+z2 = ProteinExpressionInduced()
+
+# Sigma-antisigma in not expressed, so we will use ProteinExpression as a base
+# for it with omega equal to zero. This way we stop the transcription is never
+# performed.
+z12= ProteinExpression()
+
+# Protein of interest is induced by sigma.
+x = ProteinExpressionInduced()
+
+# We define an extra species, just to keep track of the reference of the
+# antithetic controller.
+species
+  # Antithetic controller reference (molec).
+  ref = 0
+end
+
+# We define the parameter for the antithetic controller.
+parameter
+  # Simulation stop time (min).
+  __t_end = 100
+
+  # Aniquilation affinity (1/molec/min).
+  gamma = 1
+
+  # For the antithetic to properly work, we need to set to zero the
+  # degradation/diluton of sigma and anti-sigma.
+  z1.d = 0
+  z2.d = 0
+
+  # Here we stop the transcription of z12.
+  z12.omega = 0
+end
+
+# We need to include the antithetical reaction.
+reaction
+  z1.protein + z2.protein -> z12.protein ; gamma*z1.protein*z2.protein
+end
+
+rule
+  # Lastly, we have to satisfy the inputs of x an z2.
+  x.TF := z1.protein
+  z2.TF := x.protein
+
+  # And set how the reference is calculated.
+  ref := (z1.omega/z2.omega_max) * (z2.phi/z1.phi) * (z1.k/z2.k) * z2.h
+end
