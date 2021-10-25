@@ -67,7 +67,7 @@ model WildType
     nu_equation:  nu_t := nu*s/(s + K_sc) 
     phi_ht := (p_r.N*p_r.J + p_nr.N*p_nr.J)/(1 + WSum)
     r == phi_m*p_r.r_t/(1+WSum)
-    mu == m_aa/m_h*nu_t*phi_ht*phi_m*p_r.r_t
+    mu_equation:  mu == m_aa/m_h*nu_t*phi_ht*phi_m*p_r.r_t
 
     # The following equation must be updated with the value of heterologous
     # proteins:

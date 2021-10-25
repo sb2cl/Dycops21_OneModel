@@ -3,11 +3,12 @@
 % Any changes you make to it will be overwritten the next time
 % the file is generated.
 
-clear all;
-close all;
+% clear all;
+% close all;
 
 % Init model.
-m = multiscale();
+% m = multiscale();
+m = multiscale_growth_fix();
 
 % Solver options.
 opt = odeset('AbsTol',1e-8,'RelTol',1e-8);
@@ -30,13 +31,13 @@ p_0.cell__x__omega_max = 0;
 
 % Parameters first step of the simulation.
 p_1 = p;
-p_1.tspan = [0 1000];
+p_1.tspan = [0 2]*60;
 p_1.cell__z1__omega = 0;
 p_1.cell__z2__omega = 0;
 
 % Parameters second step of the simulation.
 p_2 = p;
-p_2.tspan = [p_1.tspan(2) p_1.tspan(2)+5000];
+p_2.tspan = [p_1.tspan(2) p_1.tspan(2)+18*60];
 
 %% Simulate
 
@@ -54,98 +55,125 @@ out_2 = m.simout2struct(t,x,p_2);
 
 out = concatStruct(out_1, out_2);
 
+out.t = out.t/60;
+
 
 %% Plot
 
-% Plot result.
-figure(1);
+fontSize = 8;
+axisSize = 6;
 
-subplot(2,2,1);
+% f = figure('Position',[0,0,235,225]);
+set(gca,'Fontsize',axisSize);
 
+
+yyaxis left;
 hold on;
-plot(out.t, out.cell__x__m);
-plot(out.t, out.cell__ref);
-
-grid on;
-title('Output');
-legend('x');
-ylim([0 +inf])
-
-subplot(2,2,2);
-
-hold on;
-plot(out.t, out.cell__mu);
-
-grid on;
-title('Growth rate');
-legend('\mu');
-ylim([0 +inf])
-
-subplot(2,2,3);
-
-hold on;
-plot(out.t, out.cell__z1__m);
-plot(out.t, out.cell__z2__m);
-plot(out.t, out.cell__z12__m);
-
-grid on;
-title('Control action');
-legend('z1','z2','z12');
-ylim([0 +inf])
-
-subplot(2,2,4);
-
-hold on;
-plot(out.t, out.cell__p_r__m);
-plot(out.t, out.cell__p_nr__m)
-plot(out.t, out.cell__m_h);
-plot(out.t, out.cell__m_p);
-
-grid on;
-title('ribo and non-ribo');
-legend('r','nr');
-ylim([0 +inf])
-
-figure(2);
-
-controller = out.cell__z1__m + out.cell__z2__m + out.cell__z12__m; 
-
-mass = [
-    out.cell__x__m controller out.cell__p_r__m out.cell__p_nr__m 
-    ];
-
-subplot(3,1,1);
-
-area(out.t, mass);
-ylim([0 +inf])
-legend('x','controller','ribo','ron-ribo');
-
-subplot(3,1,2);
-
-area(out.t, mass./sum(mass')');
-ylim([0 +inf])
-legend('x','controller','ribo','ron-ribo');
-
-subplot(3,1,3);
-
-hold on;
-plot(out.t, (controller + out.cell__x__m)./sum(mass')'*100);
-plot(out.t, 100-out.cell__mu./out.cell__mu(1)*100);
+ylabel('Protein $x$ $\; [$fg$]$','interpreter','latex','FontSize',fontSize);
 ylim([0 100]);
-legend('heterologous', 'growth');
+% yticks([0:0.25:2]);
+plot(out.t, out.cell__x__m);
+
+yyaxis right;
+hold on;
+ylabel('Growth rate $\; [$min$^{-1}]$','interpreter','latex','FontSize',fontSize);
+ylim([0 0.03]);
+plot(out.t, out.cell__mu);
+xlabel('Time $\; [h]$','interpreter','latex','FontSize',fontSize);
+
+% title('\textbf{Biorreactor model}','interpreter','latex','FontSize',fontSize);
+
+
+% Plot result.
+% figure(1);
+% 
+% subplot(2,2,1);
+% 
+% hold on;
+% plot(out.t, out.cell__x__m);
+% plot(out.t, out.cell__ref);
+% 
+% grid on;
+% title('Output');
+% legend('x');
+% ylim([0 +inf])
+% 
+% subplot(2,2,2);
+% 
+% hold on;
+% plot(out.t, out.cell__mu);
+% 
+% grid on;
+% title('Growth rate');
+% legend('\mu');
+% ylim([0 +inf])
+% 
+% subplot(2,2,3);
+% 
+% hold on;
+% plot(out.t, out.cell__z1__m);
+% plot(out.t, out.cell__z2__m);
+% 
+% grid on;
+% title('Control action');
+% legend('z1','z2');
+% ylim([0 +inf])
+% 
+% subplot(2,2,4);
+% 
+% hold on;
+% plot(out.t, out.cell__p_r__m);
+% plot(out.t, out.cell__p_nr__m)
+% plot(out.t, out.cell__m_h);
+% plot(out.t, out.cell__m_p);
+% 
+% grid on;
+% title('ribo and non-ribo');
+% legend('r','nr');
+% ylim([0 +inf])
 
 
 
-figure(3);
+% figure(2);
+% 
+% controller = out.cell__z1__m + out.cell__z2__m + out.cell__z12__m; 
+% 
+% mass = [
+%     out.cell__x__m controller out.cell__p_r__m out.cell__p_nr__m 
+%     ];
+% 
+% subplot(3,1,1);
+% 
+% area(out.t, mass);
+% ylim([0 +inf])
+% legend('x','controller','ribo','ron-ribo');
+% 
+% subplot(3,1,2);
+% 
+% area(out.t, mass./sum(mass')');
+% ylim([0 +inf])
+% legend('x','controller','ribo','ron-ribo');
+% 
+% subplot(3,1,3);
+% 
+% hold on;
+% plot(out.t, (controller + out.cell__x__m)./sum(mass')'*100);
+% plot(out.t, 100-out.cell__mu./out.cell__mu(1)*100);
+% ylim([0 100]);
+% legend('heterologous', 'growth');
 
-controller = out.cell__z1__J + out.cell__z2__J + out.cell__z12__J; 
 
-mass = [
-    out.cell__p_r__N.*out.cell__p_r__J out.cell__p_nr__N.*out.cell__p_nr__J out.cell__x__J controller
-    ];
 
-area(out.t, mass);
-ylim([0 +inf]);
-legend('ribo','ron-ribo','x','controller');
+% figure(3);
+% 
+% controller = out.cell__z1__J + out.cell__z2__J + out.cell__z12__J; 
+% 
+% mass = [
+%     out.cell__p_r__N.*out.cell__p_r__J out.cell__p_nr__N.*out.cell__p_nr__J out.cell__x__J controller
+%     ];
+% 
+% area(out.t, mass);
+% ylim([0 +inf]);
+% legend('ribo','ron-ribo','x','controller');
 
 

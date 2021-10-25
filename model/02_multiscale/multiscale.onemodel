@@ -22,7 +22,7 @@ cell_model = 'antithetic'
 # Mass equation: 'interpolated', 'jesus', 'fix'.
 mass_equation = 'interpolated'
 
-# Bioreactor type: 'nu_fix', 'substrate_fix', 'batch', 'continous'.
+# Bioreactor type: 'growth_fix', 'nu_fix', 'substrate_fix', 'batch', 'continous'.
 bioreactor = 'nu_fix'
 
 # Simulation time.
@@ -70,9 +70,16 @@ end
 
 ### BIOREACTOR MODEL ###
 
+if strcmp(bioreactor, 'growth_fix')
+  rule
+    # override nu equation in cell (aa/minute).
+    cell.mu_equation:  cell.mu := 0.0231
+  end
+end
+
 if strcmp(bioreactor, 'nu_fix')
   rule
-    # Override nu equation in cell (aa/minute).
+    # override nu equation in cell (aa/minute).
     cell.nu_equation:  cell.nu_t := cell.nu
   end
 end

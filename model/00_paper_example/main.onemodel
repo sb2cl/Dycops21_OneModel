@@ -1,0 +1,64 @@
+model ProteinConstant
+  species m=0, p=0
+  parameter k_m=1, d_m=1, k_p=1, d_p=1
+  reaction
+    0 -> m     ; k_m
+    m -> 0     ; d_m*m
+    m -> m + p ; k_p*m
+    p -> 0     ; d_p*p
+  end
+end
+
+model ProteinInduced(ProteinConstant)
+  input TF
+  parameter h=1, k_m_max=1
+  species k_m=0
+  rule
+    k_m := k_m_max*TF/h
+  end
+end
+
+model AntitheticController
+  z1 = ProteinConstant()
+  z2 = ProteinInduced()
+  x  = ProteinInduced()
+  parameter gamma=1, z1.d_p=0, z2.d_p=0
+  reaction
+    z1.p + z2.p -> 0 ; gamma*z1.p*z2.p
+  end
+  rule
+    x.TF  := z1.p
+    z2.TF := x.p
+  end
+end
+
+####
+
+model WildType
+  input WSum
+  ...
+end
+
+model ProteinConstant
+  input nu_t, mu, ...
+  species W=0
+  ...
+end
+
+model AntitheticController
+  z1 = ProteinConstant()
+  ...
+end
+
+cell = WildType()
+ac   = AntitheticController()
+
+rule
+  cell.WSum  := ac.z1.W + ac.z2.W + ac.x.W
+end
+
+rule
+  ac.z1.nu_t := cell.nu_t
+  ac.z1.mu   := cell.mu
+  ...
+end
