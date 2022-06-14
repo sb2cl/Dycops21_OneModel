@@ -23,14 +23,14 @@ q = paramBremer();
 n = 50;
 
 nu = q.nu(1) + (0:n-1)*(q.nu(end) - q.nu(1))/(n-1);
-K_sc = 0.1802;
+s = 3.*[0:n]/n+0.6;
 
 OUT = [];
 
-for i = 1:n-1
+for i = 1:n
     % We want to use the parameters that give rise to the growth rate we
     % selected.
-    p.s = ( nu(i)/q.nu(end) )*K_sc / ( 1 - (nu(i)/q.nu(end)) );
+    p.s = (nu(i)/1260)*K_sc / ( 1- (nu(i)/1260));
     
     % Options for the solver.
     opt = odeset('AbsTol', 1e-8, 'RelTol', 1e-8);
@@ -124,7 +124,7 @@ title('Total ribosomes');
 
 figure(2);
 
-plot(OUT.cell__nu_t, OUT.cell__phi_ht);
+plot(OUT.cell__nu, OUT.cell__phi_ht);
 grid on;
 title('$\phi_t^h$','Interpreter','latex');
 ylim([0 1]);
