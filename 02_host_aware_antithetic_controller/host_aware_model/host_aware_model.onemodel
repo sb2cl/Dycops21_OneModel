@@ -79,20 +79,18 @@ end
 
 standalone
   parameter __t_end = 1000
-  parameter nu = 1260
 
   cell = HostAwareModel()
   mass = MassInterpolated()
 
   parameter
-    m_h = 450
+    s = 3.6
   end
 
   rule
-    cell.nu_equation:  cell.nu_t := cell.nu
+    cell.s := s
     cell.m_h := mass.m_h
 
     mass.mu := cell.mu
   end
-
 end
