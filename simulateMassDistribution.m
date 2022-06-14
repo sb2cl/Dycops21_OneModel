@@ -3,7 +3,7 @@
 clear all;
 close all;
 
-m = multiscale();
+m = host_aware_model();
 
 % Solver options.
 opt = odeset('AbsTol',1e-8,'RelTol',1e-8);
