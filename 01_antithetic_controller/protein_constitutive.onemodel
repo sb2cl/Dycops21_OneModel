@@ -1,0 +1,22 @@
+# ProteinConstitutive models constitutive gene expression
+model ProteinConstitutive
+
+  # mRNA and protein concentration
+  species mRNA=0, protein=0  
+
+  parameter
+    k_m=1, d_m=1  # mRNA transcription and degradation rates
+    k_p=1, d_p=1  # Protein transcription and degradation rates
+  end
+
+  reaction
+    0 -> mRNA ; k_m                    # mRNA transcription
+    mRNA -> 0 ; d_m*mRNA               # mRNA degradation
+    mRNA -> mRNA + protein ; k_p*mRNA  # protein translation
+    protein -> 0 ; d_p*protein         # protein degradation
+  end
+end
+
+standalone
+  A = ProteinConstitutive()
+end

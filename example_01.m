@@ -1,8 +1,11 @@
 clear all;
 close all;
 
-% Init model.
+%% Init model.
+
 m = antithetic_controller();
+
+%% Simulate.
 
 % Solver options.
 opt = odeset('AbsTol',1e-8,'RelTol',1e-8);
@@ -14,28 +17,25 @@ tspan = [m.opts.t_init m.opts.t_end];
 [t,x] = ode15s(@(t,x) m.ode(t,x,m.p),tspan,m.x0,opt);
 out = m.simout2struct(t,x,m.p);
 
-% Plot result.
+%% Plot result.
+
 figure(1);
 
 subplot(2,1,1);
 
 hold on;
 
-plot(out.t, out.x__protein);
-plot(out.t, out.ref);
+plot(out.t, out.circuit__A__protein);
 
 grid on;
-legend('x.protein','ref');
+legend('circuit.A.protein','ref');
 
 subplot(2,1,2);
 
 hold on;
 
-plot(out.t, out.z1__protein);
-plot(out.t, out.z2__protein);
-plot(out.t, out.z12__protein);
+plot(out.t, out.circuit__z1__protein);
+plot(out.t, out.circuit__z2__protein);
 
 grid on;
-legend('z1.protein','z2.protein','z12.protein');
-
-
+legend('circuit.z1.protein','circuit.z2.protein');

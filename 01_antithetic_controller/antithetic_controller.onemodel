@@ -1,0 +1,25 @@
+import 'protein_constitutive.onemodel'
+import 'protein_induced.onemodel'
+
+model AntitheticController
+  z1 = ProteinConstitutive()  # Sigma factor
+  z2 = ProteinInduced()       # Anti-sigma factor
+  A  = ProteinInduced()       # Protein of interest to control
+
+  parameter gamma = 1         # Antithetic sequestration rate
+
+  reaction
+    z1.protein + z2.protein -> 0 ; gamma*z1.protein*z2.protein
+  end
+
+  rule
+    # Set z1 as the transcription factor of A.
+    A.TF  := z1.protein  
+    # Set x as the transcription factor of z2
+    z2.TF := A.protein   
+  end
+end
+
+standalone
+  circuit = AntitheticController()
+end

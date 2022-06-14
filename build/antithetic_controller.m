@@ -22,58 +22,50 @@ classdef antithetic_controller
 		function p = default_parameters(~)
 			%% Default parameters value.
 			p = [];
-			p.z1__omega = 1.0;
-			p.z1__phi = 1.0;
-			p.z1__k = 1.0;
-			p.z1__d = 0.0;
-			p.z2__phi = 1.0;
-			p.z2__k = 1.0;
-			p.z2__d = 0.0;
-			p.z2__h = 1.0;
-			p.z2__omega_max = 1.0;
-			p.z12__omega = 0.0;
-			p.z12__phi = 1.0;
-			p.z12__k = 1.0;
-			p.z12__d = 1.0;
-			p.x__phi = 1.0;
-			p.x__k = 1.0;
-			p.x__d = 1.0;
-			p.x__h = 1.0;
-			p.x__omega_max = 1.0;
-			p.gamma = 1.0;
+			p.circuit__z1__k_m = 1.0;
+			p.circuit__z1__d_m = 1.0;
+			p.circuit__z1__k_p = 1.0;
+			p.circuit__z1__d_p = 1.0;
+			p.circuit__z2__d_m = 1.0;
+			p.circuit__z2__k_p = 1.0;
+			p.circuit__z2__d_p = 1.0;
+			p.circuit__z2__h = 1.0;
+			p.circuit__z2__k_m_max = 1.0;
+			p.circuit__A__d_m = 1.0;
+			p.circuit__A__k_p = 1.0;
+			p.circuit__A__d_p = 1.0;
+			p.circuit__A__h = 1.0;
+			p.circuit__A__k_m_max = 1.0;
+			p.circuit__gamma = 1.0;
 		end
 
 		function x0 = initial_conditions(~)
 			%% Default initial conditions.
 			x0 = [
-				0.0 % z1__mRNA
-				0.0 % z1__protein
-				0.0 % z2__mRNA
-				0.0 % z2__protein
-				0.0 % z12__mRNA
-				0.0 % z12__protein
-				0.0 % x__mRNA
-				0.0 % x__protein
+				0.0 % circuit__z1__mRNA
+				0.0 % circuit__z1__protein
+				0.0 % circuit__z2__mRNA
+				0.0 % circuit__z2__protein
+				0.0 % circuit__A__mRNA
+				0.0 % circuit__A__protein
 			];
 		end
 
 		function M = mass_matrix(~)
 			%% Mass matrix for DAE systems.
 			M = [
-				1 0 0 0 0 0 0 0 
-				0 1 0 0 0 0 0 0 
-				0 0 1 0 0 0 0 0 
-				0 0 0 1 0 0 0 0 
-				0 0 0 0 1 0 0 0 
-				0 0 0 0 0 1 0 0 
-				0 0 0 0 0 0 1 0 
-				0 0 0 0 0 0 0 1 
+				1 0 0 0 0 0 
+				0 1 0 0 0 0 
+				0 0 1 0 0 0 
+				0 0 0 1 0 0 
+				0 0 0 0 1 0 
+				0 0 0 0 0 1 
 			];
 		end
 
 		function opts = simulation_options(~)
 			%% Default simulation options.
-			opts.t_end = 100.0;
+			opts.t_end = 10.0;
 			opts.t_init = 0.0;
 		end
 
@@ -89,45 +81,36 @@ classdef antithetic_controller
 			%	 dx Array with the ODE.
 
 			% ODE and algebraic states:
-			z1__mRNA = x(1,:);
-			z1__protein = x(2,:);
-			z2__mRNA = x(3,:);
-			z2__protein = x(4,:);
-			z12__mRNA = x(5,:);
-			z12__protein = x(6,:);
-			x__mRNA = x(7,:);
-			x__protein = x(8,:);
+			circuit__z1__mRNA = x(1,:);
+			circuit__z1__protein = x(2,:);
+			circuit__z2__mRNA = x(3,:);
+			circuit__z2__protein = x(4,:);
+			circuit__A__mRNA = x(5,:);
+			circuit__A__protein = x(6,:);
 
 			% Assigment states:
-			z2__TF = x__protein;
-			x__TF = z1__protein;
-			ref = (p.z1__omega./p.z2__omega_max).*(p.z2__phi./p.z1__phi).*(p.z1__k./p.z2__k).*p.z2__h;
-			z2__omega = p.z2__omega_max.*z2__TF./p.z2__h;
-			x__omega = p.x__omega_max.*x__TF./p.x__h;
+			circuit__z2__TF = circuit__A__protein;
+			circuit__A__TF = circuit__z1__protein;
+			circuit__z2__k_m = p.circuit__z2__k_m_max.*circuit__z2__TF./(circuit__z2__TF + p.circuit__z2__h);
+			circuit__A__k_m = p.circuit__A__k_m_max.*circuit__A__TF./(circuit__A__TF + p.circuit__A__h);
 
-			% der(z1__mRNA)
-			dx(1,1) =  + (p.z1__omega) - (p.z1__phi.*z1__mRNA) + (p.z1__k.*z1__mRNA) - (p.z1__k.*z1__mRNA);
+			% der(circuit__z1__mRNA)
+			dx(1,1) =  + (p.circuit__z1__k_m) - (p.circuit__z1__d_m.*circuit__z1__mRNA) + (p.circuit__z1__k_p.*circuit__z1__mRNA) - (p.circuit__z1__k_p.*circuit__z1__mRNA);
 
-			% der(z1__protein)
-			dx(2,1) =  + (p.z1__k.*z1__mRNA) - (p.z1__d.*z1__protein) - (p.gamma.*z1__protein.*z2__protein);
+			% der(circuit__z1__protein)
+			dx(2,1) =  + (p.circuit__z1__k_p.*circuit__z1__mRNA) - (p.circuit__z1__d_p.*circuit__z1__protein) - (p.circuit__gamma.*circuit__z1__protein.*circuit__z2__protein);
 
-			% der(z2__mRNA)
-			dx(3,1) =  + (z2__omega) - (p.z2__phi.*z2__mRNA) + (p.z2__k.*z2__mRNA) - (p.z2__k.*z2__mRNA);
+			% der(circuit__z2__mRNA)
+			dx(3,1) =  + (circuit__z2__k_m) - (p.circuit__z2__d_m.*circuit__z2__mRNA) + (p.circuit__z2__k_p.*circuit__z2__mRNA) - (p.circuit__z2__k_p.*circuit__z2__mRNA);
 
-			% der(z2__protein)
-			dx(4,1) =  + (p.z2__k.*z2__mRNA) - (p.z2__d.*z2__protein) - (p.gamma.*z1__protein.*z2__protein);
+			% der(circuit__z2__protein)
+			dx(4,1) =  + (p.circuit__z2__k_p.*circuit__z2__mRNA) - (p.circuit__z2__d_p.*circuit__z2__protein) - (p.circuit__gamma.*circuit__z1__protein.*circuit__z2__protein);
 
-			% der(z12__mRNA)
-			dx(5,1) =  + (p.z12__omega) - (p.z12__phi.*z12__mRNA) + (p.z12__k.*z12__mRNA) - (p.z12__k.*z12__mRNA);
+			% der(circuit__A__mRNA)
+			dx(5,1) =  + (circuit__A__k_m) - (p.circuit__A__d_m.*circuit__A__mRNA) + (p.circuit__A__k_p.*circuit__A__mRNA) - (p.circuit__A__k_p.*circuit__A__mRNA);
 
-			% der(z12__protein)
-			dx(6,1) =  + (p.z12__k.*z12__mRNA) - (p.z12__d.*z12__protein) + (p.gamma.*z1__protein.*z2__protein);
-
-			% der(x__mRNA)
-			dx(7,1) =  + (x__omega) - (p.x__phi.*x__mRNA) + (p.x__k.*x__mRNA) - (p.x__k.*x__mRNA);
-
-			% der(x__protein)
-			dx(8,1) =  + (p.x__k.*x__mRNA) - (p.x__d.*x__protein);
+			% der(circuit__A__protein)
+			dx(6,1) =  + (p.circuit__A__k_p.*circuit__A__mRNA) - (p.circuit__A__d_p.*circuit__A__protein);
 
 		end
 		function out = simout2struct(~,t,x,p)
@@ -136,21 +119,18 @@ classdef antithetic_controller
 			% We need to transpose state matrix.
 			x = x';
 			% ODE and algebraic states:
-			z1__mRNA = x(1,:);
-			z1__protein = x(2,:);
-			z2__mRNA = x(3,:);
-			z2__protein = x(4,:);
-			z12__mRNA = x(5,:);
-			z12__protein = x(6,:);
-			x__mRNA = x(7,:);
-			x__protein = x(8,:);
+			circuit__z1__mRNA = x(1,:);
+			circuit__z1__protein = x(2,:);
+			circuit__z2__mRNA = x(3,:);
+			circuit__z2__protein = x(4,:);
+			circuit__A__mRNA = x(5,:);
+			circuit__A__protein = x(6,:);
 
 			% Assigment states:
-			z2__TF = x__protein;
-			x__TF = z1__protein;
-			ref = (p.z1__omega./p.z2__omega_max).*(p.z2__phi./p.z1__phi).*(p.z1__k./p.z2__k).*p.z2__h;
-			z2__omega = p.z2__omega_max.*z2__TF./p.z2__h;
-			x__omega = p.x__omega_max.*x__TF./p.x__h;
+			circuit__z2__TF = circuit__A__protein;
+			circuit__A__TF = circuit__z1__protein;
+			circuit__z2__k_m = p.circuit__z2__k_m_max.*circuit__z2__TF./(circuit__z2__TF + p.circuit__z2__h);
+			circuit__A__k_m = p.circuit__A__k_m_max.*circuit__A__TF./(circuit__A__TF + p.circuit__A__h);
 
 			% Save simulation time.
 			out.t = t;
@@ -160,124 +140,97 @@ classdef antithetic_controller
 
 
 			% Save states.
-			out.z1__mRNA = (z1__mRNA.*ones_t)';
-			out.z1__protein = (z1__protein.*ones_t)';
-			out.z2__mRNA = (z2__mRNA.*ones_t)';
-			out.z2__protein = (z2__protein.*ones_t)';
-			out.z2__omega = (z2__omega.*ones_t)';
-			out.z2__TF = (z2__TF.*ones_t)';
-			out.z12__mRNA = (z12__mRNA.*ones_t)';
-			out.z12__protein = (z12__protein.*ones_t)';
-			out.x__mRNA = (x__mRNA.*ones_t)';
-			out.x__protein = (x__protein.*ones_t)';
-			out.x__omega = (x__omega.*ones_t)';
-			out.x__TF = (x__TF.*ones_t)';
-			out.ref = (ref.*ones_t)';
+			out.circuit__z1__mRNA = (circuit__z1__mRNA.*ones_t)';
+			out.circuit__z1__protein = (circuit__z1__protein.*ones_t)';
+			out.circuit__z2__mRNA = (circuit__z2__mRNA.*ones_t)';
+			out.circuit__z2__protein = (circuit__z2__protein.*ones_t)';
+			out.circuit__z2__k_m = (circuit__z2__k_m.*ones_t)';
+			out.circuit__z2__TF = (circuit__z2__TF.*ones_t)';
+			out.circuit__A__mRNA = (circuit__A__mRNA.*ones_t)';
+			out.circuit__A__protein = (circuit__A__protein.*ones_t)';
+			out.circuit__A__k_m = (circuit__A__k_m.*ones_t)';
+			out.circuit__A__TF = (circuit__A__TF.*ones_t)';
 
 			% Save parameters.
-			out.z1__omega = (p.z1__omega.*ones_t)';
-			out.z1__phi = (p.z1__phi.*ones_t)';
-			out.z1__k = (p.z1__k.*ones_t)';
-			out.z1__d = (p.z1__d.*ones_t)';
-			out.z2__phi = (p.z2__phi.*ones_t)';
-			out.z2__k = (p.z2__k.*ones_t)';
-			out.z2__d = (p.z2__d.*ones_t)';
-			out.z2__h = (p.z2__h.*ones_t)';
-			out.z2__omega_max = (p.z2__omega_max.*ones_t)';
-			out.z12__omega = (p.z12__omega.*ones_t)';
-			out.z12__phi = (p.z12__phi.*ones_t)';
-			out.z12__k = (p.z12__k.*ones_t)';
-			out.z12__d = (p.z12__d.*ones_t)';
-			out.x__phi = (p.x__phi.*ones_t)';
-			out.x__k = (p.x__k.*ones_t)';
-			out.x__d = (p.x__d.*ones_t)';
-			out.x__h = (p.x__h.*ones_t)';
-			out.x__omega_max = (p.x__omega_max.*ones_t)';
-			out.gamma = (p.gamma.*ones_t)';
+			out.circuit__z1__k_m = (p.circuit__z1__k_m.*ones_t)';
+			out.circuit__z1__d_m = (p.circuit__z1__d_m.*ones_t)';
+			out.circuit__z1__k_p = (p.circuit__z1__k_p.*ones_t)';
+			out.circuit__z1__d_p = (p.circuit__z1__d_p.*ones_t)';
+			out.circuit__z2__d_m = (p.circuit__z2__d_m.*ones_t)';
+			out.circuit__z2__k_p = (p.circuit__z2__k_p.*ones_t)';
+			out.circuit__z2__d_p = (p.circuit__z2__d_p.*ones_t)';
+			out.circuit__z2__h = (p.circuit__z2__h.*ones_t)';
+			out.circuit__z2__k_m_max = (p.circuit__z2__k_m_max.*ones_t)';
+			out.circuit__A__d_m = (p.circuit__A__d_m.*ones_t)';
+			out.circuit__A__k_p = (p.circuit__A__k_p.*ones_t)';
+			out.circuit__A__d_p = (p.circuit__A__d_p.*ones_t)';
+			out.circuit__A__h = (p.circuit__A__h.*ones_t)';
+			out.circuit__A__k_m_max = (p.circuit__A__k_m_max.*ones_t)';
+			out.circuit__gamma = (p.circuit__gamma.*ones_t)';
 
 		end
 		function plot(~,out)
 			%% Plot simulation result.
-			figure('Name','z1');
+			figure('Name','circuit__z1');
 			subplot(2,1,1);
-			plot(out.t, out.z1__mRNA);
-			title("z1__mRNA");
+			plot(out.t, out.circuit__z1__mRNA);
+			title("circuit__z1__mRNA");
 			ylim([0, +inf]);
 			grid on;
 
 			subplot(2,1,2);
-			plot(out.t, out.z1__protein);
-			title("z1__protein");
+			plot(out.t, out.circuit__z1__protein);
+			title("circuit__z1__protein");
 			ylim([0, +inf]);
 			grid on;
 
-			figure('Name','z2');
+			figure('Name','circuit__z2');
 			subplot(2,2,1);
-			plot(out.t, out.z2__mRNA);
-			title("z2__mRNA");
+			plot(out.t, out.circuit__z2__mRNA);
+			title("circuit__z2__mRNA");
 			ylim([0, +inf]);
 			grid on;
 
 			subplot(2,2,2);
-			plot(out.t, out.z2__protein);
-			title("z2__protein");
+			plot(out.t, out.circuit__z2__protein);
+			title("circuit__z2__protein");
 			ylim([0, +inf]);
 			grid on;
 
 			subplot(2,2,3);
-			plot(out.t, out.z2__omega);
-			title("z2__omega");
+			plot(out.t, out.circuit__z2__k_m);
+			title("circuit__z2__k_m");
 			ylim([0, +inf]);
 			grid on;
 
 			subplot(2,2,4);
-			plot(out.t, out.z2__TF);
-			title("z2__TF");
+			plot(out.t, out.circuit__z2__TF);
+			title("circuit__z2__TF");
 			ylim([0, +inf]);
 			grid on;
 
-			figure('Name','z12');
-			subplot(2,1,1);
-			plot(out.t, out.z12__mRNA);
-			title("z12__mRNA");
-			ylim([0, +inf]);
-			grid on;
-
-			subplot(2,1,2);
-			plot(out.t, out.z12__protein);
-			title("z12__protein");
-			ylim([0, +inf]);
-			grid on;
-
-			figure('Name','x');
+			figure('Name','circuit__A');
 			subplot(2,2,1);
-			plot(out.t, out.x__mRNA);
-			title("x__mRNA");
+			plot(out.t, out.circuit__A__mRNA);
+			title("circuit__A__mRNA");
 			ylim([0, +inf]);
 			grid on;
 
 			subplot(2,2,2);
-			plot(out.t, out.x__protein);
-			title("x__protein");
+			plot(out.t, out.circuit__A__protein);
+			title("circuit__A__protein");
 			ylim([0, +inf]);
 			grid on;
 
 			subplot(2,2,3);
-			plot(out.t, out.x__omega);
-			title("x__omega");
+			plot(out.t, out.circuit__A__k_m);
+			title("circuit__A__k_m");
 			ylim([0, +inf]);
 			grid on;
 
 			subplot(2,2,4);
-			plot(out.t, out.x__TF);
-			title("x__TF");
-			ylim([0, +inf]);
-			grid on;
-
-			figure('Name','');
-			subplot(1,1,1);
-			plot(out.t, out.ref);
-			title("ref");
+			plot(out.t, out.circuit__A__TF);
+			title("circuit__A__TF");
 			ylim([0, +inf]);
 			grid on;
 
