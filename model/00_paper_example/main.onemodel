@@ -1,4 +1,4 @@
-model ProteinConstant
+model ProteinConstitutive
   species m=0, p=0
   parameter k_m=1, d_m=1, k_p=1, d_p=1
   reaction
@@ -8,8 +8,14 @@ model ProteinConstant
     p -> 0     ; d_p*p
   end
 end
+standalone
+  A = ProteinConstitutive()
+end
 
-model ProteinInduced(ProteinConstant)
+
+
+import "protein_constitutive.one"
+model ProteinInduced(ProteinConstitutive)
   input TF
   parameter h=1, k_m_max=1
   species k_m=0
@@ -17,12 +23,23 @@ model ProteinInduced(ProteinConstant)
     k_m := k_m_max*TF/h
   end
 end
+standalone
+  A = ProteinConstitutive()
+  B = ProteinInduced()
+  rule
+    B.TF := A.p
+  end
+end
 
+###
+
+import "protein_constitutive.one"
+import "protein_induced.one"
 model AntitheticController
-  z1 = ProteinConstant()
+  z1 = ProteinConstitutive()
   z2 = ProteinInduced()
   x  = ProteinInduced()
-  parameter gamma=1, z1.d_p=0, z2.d_p=0
+  parameter gamma=1
   reaction
     z1.p + z2.p -> 0 ; gamma*z1.p*z2.p
   end
@@ -31,6 +48,9 @@ model AntitheticController
     z2.TF := x.p
   end
 end
+standalone
+	ac = AntitheticController()
+end
 
 ####
 
@@ -38,27 +58,36 @@ model WildType
   input WSum
   ...
 end
-
-model ProteinConstant
+model WildType_ProteinConstitutive
   input nu_t, mu, ...
-  species W=0
+  species W
   ...
 end
 
-model AntitheticController
-  z1 = ProteinConstant()
+import "wild_type.one"
+model WildType_AntitheticController
+  z1 = WildType_ProteinConstitutive()
   ...
 end
-
-cell = WildType()
-ac   = AntitheticController()
-
-rule
-  cell.WSum  := ac.z1.W + ac.z2.W + ac.x.W
+standalone
+  cell = WildType()
+  ac   = WildType_AntitheticController()
+  rule
+    cell.WSum  := ac.z1.W + ac.z2.W + ac.x.W
+    ac.z1.nu_t := cell.nu_t
+    ac.z1.mu   := cell.mu
+    ...
+  end
 end
 
-rule
-  ac.z1.nu_t := cell.nu_t
-  ac.z1.mu   := cell.mu
-  ...
+import dependencies
+model ModelName(ParentModelName)
+  define inputs
+  define species
+  define parameters
+  define reactions
+  define rules
+end
+standalone
+  example script on how to use the model
 end
