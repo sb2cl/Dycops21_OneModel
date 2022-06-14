@@ -2,9 +2,13 @@
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
+In this repository you will find the examples of the following publication:
+
+- Santos-Navarro, F. N., Navarro, J. L., Boada, Y., Vignoni, A., & Picó, J. (2022). "OneModel: an open-source SBML modeling tool focused on accessibility, simplicity, and modularity." *DYCOPS*.
+
 ## Installation
 
-You will need Matlab R2020b, Python v3.8.0 and OneModel v0.0.9, for executing the examples in this repository.
+You will need Matlab R2020b, Python v3.8.0 and OneModel v0.0.10, for running the examples in this repository.
 
 You can use pip to install OneModel:
 
@@ -14,9 +18,67 @@ pip install onemodel==0.1.0
 
 *The examples might not work, if a different version of Python or OneModel is used.*
 
+## Information of the folder and files
+
+**Folders:**
+
+- `01_antithetic_controller/` 
+ 
+contains the OneModel files for implmenting the antithetic controller.
+
+- `02_host_aware_antithetic_controller/` 
+
+contains the OneModel files for implmenting the host aware antithetic controller.
+
+- `02_host_aware_antithetic_controller/host_aware_model/` 
+ 
+contains the host aware model for *E. coli*.
+
+- `build/` 
+ 
+the generated SBML and Matlab files are saved here
+
+- `data/` 
+
+some experimental values we need to run the Matlab simulations
+
+- `utils/` 
+ 
+some custom code we need to run the Matlab simulations
+
+**Files:**
+
+- `build_examples.sh` 
+
+is a shell script that calls OneModel to generate Matlab code from the examples.
+
+- `example_01.m` 
+
+Matlab script that runs the simulation of the antithetic controller
+
+- `example_02.m` 
+ 
+Matlab script that runs the simulation of the host aware antithetic controller
+
+- `initialize.m` 
+
+you need to execute this script in Matlab before executing other Matlab scripts
+
+- `LICENSE` 
+
+license file
+
+- `README.md` 
+
+is the text file you are reading right now :-)
+
+- `simulateMassDistribution.m` 
+
+Matlab script that run multiple simulations of the host aware model to check it is well implemented
+
 ## Citing
 
-If you use SBML2dae in your research, please use the following citations in your published works:
+If you use OneModel or SBML2dae in your research, please use the following citations in your published works:
 
 - Santos-Navarro, F. N., Navarro, J. L., Boada, Y., Vignoni, A., & Picó, J. (2022). "OneModel: an open-source SBML modeling tool focused on accessibility, simplicity, and modularity." *DYCOPS*.
 
