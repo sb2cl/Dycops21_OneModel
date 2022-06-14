@@ -7,8 +7,7 @@
 % close all;
 
 % Init model.
-% m = multiscale();
-m = multiscale_growth_fix();
+m = host_aware_antithetic_controller();
 
 % Solver options.
 opt = odeset('AbsTol',1e-8,'RelTol',1e-8);
